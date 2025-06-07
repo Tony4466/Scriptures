@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scripture Checker</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      font-size: 200%;
+    }
+
+    .wrapper {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .container {
+      text-align: center;
+      background-color: white;
+      padding: 60px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 900px;
+      width: 90%;
+    }
+
+    .average-box {
+      background-color: white;
+      padding: 60px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      font-size: 1em;
+      min-width: 300px;
+      text-align: center;
+    }
+
+    #greeting {
+      margin: 40px 0;
+      padding: 40px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+      font-size: 1em;
+      min-height: 100px;
+    }
+
+    #referenceMessage {
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #333;
+      min-height: 40px;
+    }
+
+    input {
+      font-size: 1em;
+      padding: 10px;
+      width: 80%;
+      margin-bottom: 20px;
+    }
+
+    button {
+      font-size: 1em;
+      padding: 12px 24px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:first-of-type {
+      background-color: grey;
+      color: white;
+    }
+
+    button:last-of-type {
+      background-color: lightgreen;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <input type="text" id="userInput" placeholder="Type a reference..." autocomplete="off"><br>
+      <p id="referenceMessage"></p>
+
+      <p id="greeting"></p>
+
+      <button onclick="doSomething()" tabindex="-1" onkeydown="return false">Show Random Scripture</button>
+<button id="checkButton" onclick="checkReference()" tabindex="-1" onkeydown="return false">Check Reference</button>
+
+    </div>
+
+    <div class="average-box">
+      <div id="averageScoreBox">
+  <div>Current Average: <span id="averageScore">0</span></div>
+  <div>Total Score: <span id="totalScore">0</span></div>
+  <div>Attempts: <span id="scriptureCount">0</span></div>
+</div>
+    </div>
+  </div>
+
+  <!-- Load arrays from external JS file -->
+  <script src="source.js"></script>
+
+  <script>
+  let currentIndex = null;
+  let scores = [];
+
+  function doSomething() {
+  currentIndex = Math.floor(Math.random() * scriptures.length);
+  const verse = scriptures[currentIndex];
+  document.getElementById("greeting").innerHTML = verse;
+  document.getElementById("referenceMessage").innerHTML = "";
+  document.getElementById("userInput").value = ""; // Clear the text box
+  document.getElementById("checkButton").disabled = false;
+}
+
+  function checkReference() {
+    const input = document.getElementById("userInput").value.trim().toLowerCase();
+    const messageBox = document.getElementById("referenceMessage");
+
+    if (currentIndex === null) {
+      messageBox.innerHTML = "Click 'Show Random Scripture' first.";
+      return;
+    }
+
+    const correctReference = references[currentIndex].toLowerCase();
+    const allRefsLower = references.map(r => r.toLowerCase());
+
+    let score = 0;
+
+    if (input === correctReference) {
+      score = 1000;
+      messageBox.innerHTML = `You're right! That was ${references[currentIndex]}. Score: 1000/1000`;
+    } else if (allRefsLower.includes(input)) {
+      const userIndex = allRefsLower.indexOf(input);
+      const distance = Math.abs(currentIndex - userIndex);
+      const decayBase = Math.pow(1 / 1000, 1 / 3000);
+      score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
+      messageBox.innerHTML = `You entered: "${references[userIndex]}"<br>
+        Correct answer: "${references[currentIndex]}"<br>
+        Score: ${score}/1000`;
+    } else {
+      messageBox.innerHTML = `"${input}" doesn't match any of my scripture references. Check your spelling and try again.`;
+      return;
+    }
+
+    scores.push(score);
+
+const total = scores.reduce((a, b) => a + b, 0);
+const average = total / scores.length;
+
+document.getElementById("averageScore").innerText = average.toFixed(0);
+document.getElementById("totalScore").innerText = total;
+document.getElementById("scriptureCount").innerText = scores.length;
+
+    document.getElementById("checkButton").disabled = true;
+  }
+</script>
+</body>
+</html>
