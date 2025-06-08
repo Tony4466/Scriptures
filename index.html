@@ -16,10 +16,19 @@
     }
 
     .wrapper {
-      display: flex;
-      gap: 40px;
-      align-items: flex-start;
-    }
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-direction: row; /* Default layout */
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    flex-direction: column; /* Stack on smaller screens */
+    align-items: center;
+  }
+}
 
     .container {
       text-align: center;
