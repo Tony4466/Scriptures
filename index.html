@@ -16,16 +16,17 @@
     }
 
     .wrapper {
-      display: flex;
-      flex-direction: row;
-      gap: 40px;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 20px;
-      width: 100%;
-      max-width: 1200px;
-    }
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
 
     .container, .score-box {
       background-color: white;
@@ -46,16 +47,17 @@
     }
 
     @media (max-width: 768px) {
-      .wrapper {
-        flex-direction: column;
-        align-items: center;
-      }
+  .wrapper {
+    flex-direction: column !important;
+    align-items: center;
+  }
 
-      .container,
-      .score-box {
-        width: 90%;
-      }
-    }
+  .container,
+  .score-box {
+    width: 90% !important;
+  }
+}
+
 
     input {
       font-size: 1em;
