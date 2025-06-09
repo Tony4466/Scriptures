@@ -1,87 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Scripture Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background-color: #f0f4f8;
-      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
 
     .wrapper {
       display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      padding: 20px;
       flex-wrap: wrap;
-      flex-direction: row;
-      justify-content: center;
-      align-items: flex-start;More actions
-      padding: 40px;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      gap: 40px;
     }
 
     .container {
-  text-align: center;
-  background-color: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  width: 90%;
-}
+      text-align: center;
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 90%;
+    }
 
-.debug-box {
-  background-color: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 180px;  /* Make it narrower */
-  width: 100%;
-  font-size: 14px;    /* Slightly smaller font */
-  text-align: left;
-}
-
-
+    .debug-box {
+      background-color: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 180px;
+      width: 100%;
+      font-size: 14px;
+      text-align: left;
+    }
 
     #greeting {
-      margin: 40px 0;
-      padding: 30px;
-      border: 2px solid #ccc;
-      border-radius: 12px;
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
       background-color: #f9f9f9;
-      font-size: 32px;
-      min-height: 80px;
+      font-size: 18px;
+      min-height: 60px;
     }
 
     #referenceMessage {
-      margin-top: 20px;
-      font-size: 26px;
+      margin-top: 10px;
+      font-size: 16px;
       color: #333;
-      min-height: 40px;
+      min-height: 20px;
     }
 
     input {
-      font-size: 28px;
-      padding: 12px;
-      width: 90%;
-      margin-bottom: 15px;
+      font-size: 18px;
+      padding: 8px;
+      width: 80%;
+      margin-bottom: 5px;
     }
 
     button {
-      font-size: 28px;
-      padding: 14px 28px;
-      margin: 10px;
+      font-size: 18px;
+      padding: 10px 20px;
+      margin: 5px;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
     }
 
@@ -94,134 +86,80 @@
       background-color: lightgreen;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 600px) {
       .wrapper {
-        flex-direction: column !important;
+        flex-direction: column;
         align-items: center;
       }
 
-      .container,
-      .score-box {
-        width: 90% !important;
-        max-width: 100% !important;
+      .container {
+        padding: 15px;
+        max-width: 95%;
+        font-size: 0.9em;
+      }
+
+      .debug-box {
+        padding: 10px;
+        font-size: 0.75em;
+        max-width: 90%;
+        width: 100%;
+      }
+
+      #greeting {
+        font-size: 1em;
+        padding: 10px;
+        min-height: 30px;
+      }
+
+      input {
+        font-size: 1em;
+        padding: 6px;
+      }
+
+      button {
+        font-size: 1em;
+        padding: 8px 14px;
+      }
+
+      #referenceMessage {
+        font-size: 0.9em;
       }
     }
-    @media (max-width: 600px) {
-  .container {
-    padding: 15px;
-    max-width: 90%;
-    font-size: 0.5em;
-  }
-
-  .debug-box {
-    padding: 10px;
-    font-size: 0.4em;
-    max-width: 90%;
-  }
-
-  #greeting {
-    font-size: 0.5em;
-    padding: 10px;
-    min-height: 30px;
-  }
-
-  input {
-    font-size: 0.5em;
-    padding: 4px;
-  }
-
-  button {
-    font-size: 0.5em;
-    padding: 5px 10px;
-  }
-
-  #referenceMessage {
-    font-size: 0.5em;
-  }
-
-  .wrapper {
-    flex-direction: column;
-    align-items: center;
-  }
-}
-@media (max-width: 600px) {
-  .wrapper {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .container {
-    padding: 15px;
-    max-width: 95%;
-    font-size: 0.9em;
-  }
-
-  .debug-box {
-    padding: 10px;
-    font-size: 0.75em; /* Smaller font, but not too small */
-    max-width: 90%;
-    width: 100%;
-  }
-
-  #greeting {
-    font-size: 1em;
-    padding: 10px;
-    min-height: 30px;
-  }
-
-  input {
-    font-size: 1em;
-    padding: 6px;
-  }
-
-  button {
-    font-size: 1em;
-    padding: 8px 14px;
-  }
-
-  #referenceMessage {
-    font-size: 0.9em;
-  }
-}
-
   </style>
 </head>
 <body>
   <div class="wrapper">
     <div class="container">
-      <input type="text" id="userInput" placeholder="Type a reference..." autocomplete="off" /><br />
+      <input type="text" id="userInput" placeholder="Type a reference..." autocomplete="off"><br>
       <p id="referenceMessage"></p>
-
       <p id="greeting"></p>
-
       <button onclick="doSomething()">Show Random Scripture</button>
       <button id="checkBtn" onclick="checkReference()">Check Reference</button>
     </div>
 
-    <div class="score-box">
-      <div id="averageScore">
-        Current Average: 0<br />
-        Total Score: 0<br />
+    <div class="debug-box">
+      <p id="scoreDisplay">
+        Current Average: 0<br>
+        Total Score: 0<br>
         Attempts: 0
-      </div>
+      </p>
     </div>
   </div>
 
-  <!-- Load arrays from external JS file -->
+  <!-- Load scriptures and references -->
   <script src="source.js"></script>
 
   <script>
     let currentIndex = null;
     let scores = [];
     let totalScore = 0;
-    let totalAttempts = 0;
 
     function doSomething() {
       currentIndex = Math.floor(Math.random() * scriptures.length);
       const verse = scriptures[currentIndex];
       const reference = references[currentIndex];
-      document.getElementById("greeting").innerHTML = verse;
-      document.getElementById("referenceMessage").innerHTML = "";
+      document.getElementById("greeting").innerText = verse;
+      document.getElementById("referenceMessage").innerText = "";
       document.getElementById("userInput").value = "";
       document.getElementById("checkBtn").disabled = false;
     }
@@ -229,15 +167,8 @@
     function checkReference() {
       const input = document.getElementById("userInput").value.trim().toLowerCase();
       const messageBox = document.getElementById("referenceMessage");
-
-      if (currentIndex === null) {
-        messageBox.innerHTML = "Click 'Show Random Scripture' first.";
-        return;
-      }
-
+      const allRefsLower = references.map(ref => ref.toLowerCase());
       const correctReference = references[currentIndex].toLowerCase();
-      const allRefsLower = references.map(r => r.toLowerCase());
-
       let score = 0;
 
       if (input === correctReference) {
@@ -249,8 +180,8 @@
         const decayBase = Math.pow(1 / 1000, 1 / 3000);
         score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
         messageBox.innerHTML = `You entered: "${references[userIndex]}"<br>
-          Correct answer: "${references[currentIndex]}"<br>
-          Score: ${score}/1000`;
+        Correct answer: "${references[currentIndex]}"<br>
+        Score: ${score}/1000`;
       } else {
         messageBox.innerHTML = `"${input}" doesn't match any of my scripture references. Check your spelling and try again.`;
         return;
@@ -258,14 +189,11 @@
 
       scores.push(score);
       totalScore += score;
-      totalAttempts++;
-      const average = totalScore / totalAttempts;
-
-      document.getElementById("averageScore").innerHTML = `
-        Current Average: ${average.toFixed(2)}<br>
-        Total Score: ${totalScore}<br>
-        Attempts: ${totalAttempts}
-      `;
+      const average = totalScore / scores.length;
+      document.getElementById("scoreDisplay").innerHTML =
+        `Current Average: ${average.toFixed(2)}<br>` +
+        `Total Score: ${totalScore}<br>` +
+        `Attempts: ${scores.length}`;
 
       document.getElementById("checkBtn").disabled = true;
     }
