@@ -26,7 +26,7 @@
     .container {
       text-align: center;
       background-color: white;
-      padding: 0px;
+      padding: 20px;
       border-radius: 15px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       max-width: 600px;
@@ -87,6 +87,14 @@
     }
 
     @media (max-width: 600px) {
+      body {
+    overflow-x: hidden;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
       .wrapper {
         flex-direction: column;
         align-items: center;
