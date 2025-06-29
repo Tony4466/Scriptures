@@ -200,7 +200,7 @@ margin-bottom: 200px
       totalScore += score;
       const average = totalScore / scores.length;
       document.getElementById("scoreDisplay").innerHTML =
-        `Current Average: ${average.toFixed(2)}<br>` +
+        `Current Average: ${average.toFixed(0)}<br>` +
         `Total Score: ${totalScore}<br>` +
         `Attempts: ${scores.length}`;
 
