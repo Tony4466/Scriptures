@@ -47,18 +47,18 @@
       text-align: left;
     }
 
-    #greeting {
+    #scriptureContents {
       margin: 20px 0;
       padding: 20px;
       border: 1px solid #ccc;
       border-radius: 10px;
       background-color: #f9f9f9;
-      font-size: 1px;
+      font-size: 28px;
       min-height: 60px;
     }
 
     #referenceMessage {
-      border: 40px
+      border: 1px
       font-size: 40px;
       color: #333;
       min-height: 30px;
@@ -129,7 +129,7 @@ margin-bottom: 200px
     overflow-x: hidden;
   }
 
-      #greeting {
+      #scriptureContents {
         font-size: 15px;
         padding: 10px;
         min-height: 30px;
@@ -149,7 +149,7 @@ margin-bottom: 200px
     <div class="container">
       <input type="text" id="userInput" placeholder="Type a reference..." autocomplete="off" spellcheck="false">
       <p id="referenceMessage"></p>
-      <p id="greeting"></p>
+      <p id="scriptureContents"></p>
       <button id="showBtn" onclick="doSomething()">Show Random Scripture</button>
       <button id="checkBtn" onclick="checkReference()">Check Reference</button>
     </div>
@@ -175,7 +175,7 @@ margin-bottom: 200px
   currentIndex = Math.floor(Math.random() * scriptures.length);
   const verse = scriptures[currentIndex];
   const reference = references[currentIndex];
-  document.getElementById("greeting").innerText = verse;
+  document.getElementById("scriptureContents").innerText = verse;
   document.getElementById("referenceMessage").innerText = "";
   document.getElementById("userInput").value = "";
   document.getElementById("checkBtn").disabled = false;
