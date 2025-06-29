@@ -135,7 +135,7 @@ margin-bottom: 200px
       <input type="text" id="userInput" placeholder="Type a reference..." autocomplete="off"><br>
       <p id="referenceMessage"></p>
       <p id="greeting"></p>
-      <button onclick="doSomething()">Show Random Scripture</button>
+      <button id="showBtn" onclick="doSomething()">Show Random Scripture</button>
       <button id="checkBtn" onclick="checkReference()">Check Reference</button>
     </div>
 
@@ -157,14 +157,16 @@ margin-bottom: 200px
     let totalScore = 0;
 
     function doSomething() {
-      currentIndex = Math.floor(Math.random() * scriptures.length);
-      const verse = scriptures[currentIndex];
-      const reference = references[currentIndex];
-      document.getElementById("greeting").innerText = verse;
-      document.getElementById("referenceMessage").innerText = "";
-      document.getElementById("userInput").value = "";
-      document.getElementById("checkBtn").disabled = false;
-    }
+  currentIndex = Math.floor(Math.random() * scriptures.length);
+  const verse = scriptures[currentIndex];
+  const reference = references[currentIndex];
+  document.getElementById("greeting").innerText = verse;
+  document.getElementById("referenceMessage").innerText = "";
+  document.getElementById("userInput").value = "";
+  document.getElementById("checkBtn").disabled = false;
+  document.getElementById("showBtn").disabled = true; // Disable the show button
+}
+
 
     function checkReference() {
       const input = document.getElementById("userInput").value.trim().toLowerCase();
@@ -198,6 +200,8 @@ margin-bottom: 200px
         `Attempts: ${scores.length}`;
 
       document.getElementById("checkBtn").disabled = true;
+document.getElementById("showBtn").disabled = false;
+
     }
   </script>
 </body>
