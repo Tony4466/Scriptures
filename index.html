@@ -34,7 +34,6 @@
       max-height: 1200px;
       width: 100%;
       height: 100%;
-      
     }
 
     .debug-box {
@@ -59,7 +58,7 @@
     }
 
     #correctnessReport {
-      font-size: 20x;
+      font-size: 20px;
       color: #333;
       min-height: 2px;
       max-width: 900px;
@@ -92,43 +91,40 @@
     button:last-of-type {
       background-color: lightgreen;
     }
-button:disabled {
-  background-color: #ccc !important;
-  color: #666;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-    @media (max-width: 900px) {
-  .wrapper {
-    flex-direction: column-reverse;
-    align-items: center;
-    width: 100%;
-    max-width: 100%;
-  }
-      .container {
-      max-width: 500px;
-      width: 100%;
-      
+
+    button:disabled {
+      background-color: #ccc !important;
+      color: #666;
+      cursor: not-allowed;
+      opacity: 0.7;
     }
 
-          .debug-box {
+    @media (max-width: 900px) {
+      .wrapper {
+        flex-direction: column-reverse;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+      }
+      .container {
+        max-width: 500px;
+        width: 100%;
+      }
+      .debug-box {
         font-size: 20px;
       }
-      
       button {
-      font-size: 20px;
-    }
-      
-      button:last-of-type {
-margin-bottom: 200px;
+        font-size: 20px;
       }
-#correctnessReport {
-      min-height: 5px;
-    }
-  body {
-    overflow-x: hidden;
-  }
-
+      button:last-of-type {
+        margin-bottom: 200px;
+      }
+      #correctnessReport {
+        min-height: 5px;
+      }
+      body {
+        overflow-x: hidden;
+      }
       #scriptureContents {
         font-size: 15px;
         padding: 10px;
@@ -137,7 +133,6 @@ margin-bottom: 200px;
         margin-left: 0px;
         margin-right: 0px;
       }
-
       input {
         padding: 6px;
         margin: 5px;
@@ -153,9 +148,9 @@ margin-bottom: 200px;
     <div class="container">
       <input type="text" id="userInput" placeholder="Type a reference..." autocomplete="off" spellcheck="false">
       <p id="correctnessReport"></p>
-      <p id="scriptureContents">Click "Show Random Scripture" to begin. Then guess the scripture reference that matches the verse shown.</p>
+      <p id="scriptureContents">Click "Show Verse" to begin. You have 5 daily verses. Guess the reference for each verse shown.</p>
 
-      <button id="showBtn" onclick="doSomething()">Show Random Scripture</button>
+      <button id="showBtn" onclick="showNextVerse()">Show Verse</button>
       <button id="checkBtn" onclick="checkReference()">Check Reference</button>
     </div>
 
@@ -175,18 +170,50 @@ margin-bottom: 200px;
     let currentIndex = null;
     let scores = [];
     let totalScore = 0;
+    let versePointer = 0;
+    let dailyIndexes = [];
 
-    function doSomething() {
-  currentIndex = Math.floor(Math.random() * scriptures.length);
-  const verse = scriptures[currentIndex];
-  const reference = references[currentIndex];
-  document.getElementById("scriptureContents").innerText = verse;
-  document.getElementById("correctnessReport").innerText = "";
-  document.getElementById("userInput").value = "";
-  document.getElementById("checkBtn").disabled = false;
-  document.getElementById("showBtn").disabled = true; // Disable the show button
-}
+    // Get a seed number based on today's date
+    function getDailySeed() {
+      const today = new Date();
+      return today.getFullYear() * 1000 + today.getMonth() * 50 + today.getDate();
+    }
 
+    // Simple deterministic "random" function
+    function seededRandom(seed) {
+      let x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    }
+
+    // Get 5 daily verse indexes
+    function getDailyVerses() {
+      let seed = getDailySeed();
+      let indexes = [];
+      for (let i = 0; i < 5; i++) {
+        seed += i;
+        let index = Math.floor(seededRandom(seed) * scriptures.length);
+        indexes.push(index);
+      }
+      return indexes;
+    }
+
+    dailyIndexes = getDailyVerses();
+
+    function showNextVerse() {
+      if (versePointer >= dailyIndexes.length) {
+        document.getElementById("scriptureContents").innerText = "That's all for today! Come back tomorrow for new verses.";
+        document.getElementById("showBtn").disabled = true;
+        return;
+      }
+
+      currentIndex = dailyIndexes[versePointer];
+      const verse = scriptures[currentIndex];
+      document.getElementById("scriptureContents").innerText = verse;
+      document.getElementById("correctnessReport").innerText = "";
+      document.getElementById("userInput").value = "";
+      document.getElementById("checkBtn").disabled = false;
+      document.getElementById("showBtn").disabled = true;
+    }
 
     function checkReference() {
       const input = document.getElementById("userInput").value.trim().toLowerCase();
@@ -207,7 +234,7 @@ margin-bottom: 200px;
         Correct answer: "${references[currentIndex]}"<br>
         Score: ${score}/1000`;
       } else {
-        messageBox.innerHTML = `"${input}" doesn't match any of my scripture references. Check your spelling and try again.`;
+        messageBox.innerHTML = `"${input}" doesn't match any scripture reference. Check your spelling and try again.`;
         return;
       }
 
@@ -220,8 +247,8 @@ margin-bottom: 200px;
         `Attempts: ${scores.length}`;
 
       document.getElementById("checkBtn").disabled = true;
-document.getElementById("showBtn").disabled = false;
-
+      document.getElementById("showBtn").disabled = false;
+      versePointer++;
     }
   </script>
 </body>
