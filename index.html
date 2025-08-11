@@ -76,21 +76,31 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 40px;
   }
   #mainMenu h1 {
     font-size: 2.8rem;
     color: #222;
-    margin: 0;
+    margin: 0 0 15px 0;
   }
   #mainMenu p {
     font-size: 1.1rem;
     color: #444;
     max-width: 500px;
     text-align: center;
+    margin-bottom: 30px;
   }
+
+  /* Menu buttons container - horizontal row with gaps */
+  #menuButtons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+    max-width: 700px;
+  }
+
   .menu-button {
-    width: 220px;
+    flex: 1 1 0;
     padding: 15px 0;
     font-size: 1.3rem;
     font-weight: 600;
@@ -99,6 +109,7 @@
     cursor: pointer;
     color: white;
     transition: background-color 0.3s ease;
+    text-align: center;
   }
   #dailyBtn {
     background-color: #4a90e2; /* blue */
@@ -121,8 +132,8 @@
 
   /* Verse box styling (white) - narrower to fit container */
   #verseBox {
-    background-color: #fff8e7;
-    border: 2px solid #e0c68a;
+    background-color: white;
+    border: 2px solid black;
     border-radius: 12px;
     font-size: 1.8rem;
     padding: 25px;
@@ -140,7 +151,7 @@
     font-size: 1.4rem;
     padding: 12px 15px;
     border-radius: 8px;
-    border: 2px solid #e0c68a;
+    border: 2px solid black;
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
@@ -186,10 +197,10 @@
   .btn-orange:hover:not(:disabled) {
     background: linear-gradient(135deg, #d97721, #e78b33);
   }
-  /* Disabled button style */
+  /* Disabled button style: keep white text */
   button:disabled {
     background-color: #ccc !important;
-    color: #666;
+    color: white !important;
     cursor: not-allowed;
     opacity: 0.7;
   }
@@ -267,6 +278,10 @@
       max-width: 100%;
       height: 12px;
     }
+    /* Menu buttons horizontally stacked on small screens */
+    #menuButtons {
+      flex-direction: column;
+    }
   }
 </style>
 </head>
@@ -281,9 +296,11 @@
     <div id="mainMenu">
       <h1>Scripture Guessing Game</h1>
       <p>Choose your game mode:</p>
-      <button id="dailyBtn" class="menu-button btn-blue" onclick="startDailyGame()">Daily Game</button>
-      <button id="randomBtn" class="menu-button btn-green" onclick="startRandomGame()">Random Verses Game</button>
-      <button id="customBtn" class="menu-button btn-orange" onclick="startCustomGame()">Custom Game</button>
+      <div id="menuButtons">
+        <button id="dailyBtn" class="menu-button btn-blue" onclick="startDailyGame()">Daily Game</button>
+        <button id="randomBtn" class="menu-button btn-green" onclick="startRandomGame()">Random Verses Game</button>
+        <button id="customBtn" class="menu-button btn-orange" onclick="startCustomGame()">Custom Game</button>
+      </div>
     </div>
 
     <!-- Daily Game -->
@@ -295,7 +312,7 @@
       <input type="text" id="dailyInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
       <div class="button-row">
         <button id="showVerseBtn" class="btn-blue" onclick="showDailyVerse()">Show Verse</button>
-        <button id="checkRefBtn" class="btn-green" onclick="checkDailyReference()" disabled>Check Reference</button>
+        <button id="checkRefBtn" class="btn-blue" onclick="checkDailyReference()" disabled>Check Reference</button>
       </div>
       <p id="correctnessReport"></p>
       <button class="btn-blue" style="margin-top:15px;" onclick="goBack()">← Back to Menu</button>
@@ -665,6 +682,7 @@
     debugBox.classList.add('hidden');
     wrapper.classList.add('menu-active');
     setBodyBackground(null);
+    resetDebug();
   };
 </script>
 </body>
