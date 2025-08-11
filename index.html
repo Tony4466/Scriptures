@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #cce2ff, #f2f6ff, #c0cffc);
+      background: linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -22,6 +22,8 @@
       gap: 20px;
       align-items: flex-start;
       padding: 20px;
+      width: 100%;
+      max-width: 1200px;
     }
 
     .container {
@@ -29,22 +31,38 @@
       background-color: white;
       padding: 20px;
       border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       max-width: 900px;
-      max-height: 1200px;
       width: 100%;
-      height: 100%;
     }
 
     .debug-box {
       background-color: white;
-      padding-left: 40px;
+      padding: 20px;
       border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       max-width: 400px;
       width: 100%;
       font-size: 28px;
       text-align: left;
+    }
+
+    /* Progress bar container */
+    .progress-container {
+      width: 100%;
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    /* Progress bar fill */
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #4caf50;
+      transition: width 0.4s ease;
     }
 
     #scriptureContents {
@@ -52,9 +70,10 @@
       margin: 20px;
       border: 1px solid #ccc;
       border-radius: 10px;
-      background-color: #f9f9f9;
+      background-color: #fff8e7;
       font-size: 28px;
       min-height: 60px;
+      border: 2px solid #e0c68a;
     }
 
     #correctnessReport {
@@ -81,15 +100,15 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-    }
-
-    button:first-of-type {
-      background-color: grey;
       color: white;
     }
 
+    button:first-of-type {
+      background-color: #4a90e2;
+    }
+
     button:last-of-type {
-      background-color: lightgreen;
+      background-color: #4caf50;
     }
 
     button:disabled {
@@ -103,12 +122,9 @@
       .wrapper {
         flex-direction: column-reverse;
         align-items: center;
-        width: 100%;
-        max-width: 100%;
       }
       .container {
         max-width: 500px;
-        width: 100%;
       }
       .debug-box {
         font-size: 20px;
@@ -116,29 +132,10 @@
       button {
         font-size: 20px;
       }
-      button:last-of-type {
-        margin-bottom: 200px;
-      }
-      #correctnessReport {
-        min-height: 5px;
-      }
-      body {
-        overflow-x: hidden;
-      }
       #scriptureContents {
         font-size: 15px;
         padding: 10px;
         min-height: 30px;
-        margin-bottom: 15px;
-        margin-left: 0px;
-        margin-right: 0px;
-      }
-      input {
-        padding: 6px;
-        margin: 5px;
-      }
-      button {
-        padding: 8px 14px;
       }
     }
   </style>
@@ -146,6 +143,11 @@
 <body>
   <div class="wrapper">
     <div class="container">
+      <!-- Progress bar -->
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
       <input type="text" id="userInput" placeholder="Type a reference..." autocomplete="off" spellcheck="false">
       <p id="correctnessReport"></p>
       <p id="scriptureContents">Click "Show Verse" to begin. You have 5 daily verses. Guess the reference for each verse shown.</p>
@@ -173,19 +175,16 @@
     let versePointer = 0;
     let dailyIndexes = [];
 
-    // Get a seed number based on today's date
     function getDailySeed() {
       const today = new Date();
       return today.getFullYear() * 1000 + today.getMonth() * 50 + today.getDate();
     }
 
-    // Simple deterministic "random" function
     function seededRandom(seed) {
       let x = Math.sin(seed) * 10000;
       return x - Math.floor(x);
     }
 
-    // Get 5 daily verse indexes
     function getDailyVerses() {
       let seed = getDailySeed();
       let indexes = [];
@@ -213,6 +212,11 @@
       document.getElementById("userInput").value = "";
       document.getElementById("checkBtn").disabled = false;
       document.getElementById("showBtn").disabled = true;
+    }
+
+    function updateProgressBar() {
+      const progress = ((versePointer) / dailyIndexes.length) * 100;
+      document.getElementById("progressBar").style.width = progress + "%";
     }
 
     function checkReference() {
@@ -246,10 +250,14 @@
         `Total Score: ${totalScore}<br>` +
         `Attempts: ${scores.length}`;
 
+      versePointer++;
+      updateProgressBar();
       document.getElementById("checkBtn").disabled = true;
       document.getElementById("showBtn").disabled = false;
-      versePointer++;
     }
+
+    // Initialize progress bar at 0%
+    updateProgressBar();
   </script>
 </body>
 </html>
