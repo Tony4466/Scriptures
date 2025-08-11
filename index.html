@@ -5,29 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Scripture Guessing Game</title>
 <style>
-  /* Shared styles */
-  body, html {
-    margin: 0; padding: 0; height: 100%;
+  /* Body and general background for each mode */
+  body {
+    margin: 0;
     font-family: Arial, sans-serif;
+    min-height: 100vh;
+    padding-left: 20px;
+    padding-right: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  #app {
-    width: 90vw;
-    max-width: 900px;
-    min-height: 600px;
-    border-radius: 15px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    box-sizing: border-box;
-    color: #222;
+    background: #f0f4f8; /* default menu background */
   }
 
-  /* --- Main Menu --- */
+  /* Wrapper and layout like your original */
+  .wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 20px;
+    max-width: 1200px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Main container for content */
+  .container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 900px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Debug box on side */
+  .debug-box {
+    background-color: white;
+    padding: 20px 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 400px;
+    width: 100%;
+    font-size: 28px;
+    text-align: left;
+  }
+
+  /* Main menu inside container */
   #mainMenu {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -35,14 +64,14 @@
   }
   #mainMenu h1 {
     font-size: 2.8rem;
-    margin-bottom: 10px;
     color: #222;
+    margin: 0;
   }
   #mainMenu p {
-    max-width: 450px;
     font-size: 1.1rem;
-    margin-bottom: 30px;
     color: #444;
+    max-width: 500px;
+    text-align: center;
   }
   .menu-button {
     width: 220px;
@@ -56,230 +85,221 @@
     transition: background-color 0.3s ease;
   }
   #dailyBtn {
-    background-color: #4a90e2;
+    background-color: #4a90e2; /* blue */
   }
   #dailyBtn:hover {
     background-color: #3a7bd5;
   }
   #randomBtn {
-    background: linear-gradient(135deg, #79c267, #a4d48a);
-    border: none;
+    background: linear-gradient(135deg, #79c267, #a4d48a); /* green gradient */
   }
   #randomBtn:hover {
     background: linear-gradient(135deg, #6bb15e, #92c374);
   }
 
-  /* --- Daily Game --- */
-  #dailyGame {
-    display: none;
-    flex-direction: column;
-    background: linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc);
-    border-radius: 15px;
-    padding: 30px;
-    box-sizing: border-box;
-    height: 100%;
-    color: #222;
-  }
-  #dailyGame #verseBox {
-    background-color: #eaf4ff;
-    border: 2px solid #b0c8e0;
+  /* Verse box styling (white) */
+  #verseBox {
+    background-color: #fff8e7;
+    border: 2px solid #e0c68a;
     border-radius: 12px;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     padding: 25px;
     min-height: 120px;
-    margin-bottom: 30px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-  }
-  #dailyGame input {
-    font-size: 1.2rem;
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: 2px solid #b0c8e0;
     width: 100%;
-    max-width: 500px;
-    margin-bottom: 15px;
-    box-sizing: border-box;
+    max-width: 800px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    color: #222;
   }
-  #dailyGame button {
-    font-size: 1.2rem;
+
+  /* Input styling */
+  input[type="text"] {
+    font-size: 1.4rem;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 2px solid #e0c68a;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  /* Buttons container for layout */
+  .button-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  /* Buttons styling */
+  button {
+    font-size: 1.3rem;
     padding: 12px 25px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
     color: white;
-    margin: 10px 5px 0 5px;
     transition: background-color 0.3s ease;
   }
-  #dailyGame #showVerseBtn {
-    background-color: #7daef5;
+  /* Blue button (Daily game) */
+  .btn-blue {
+    background-color: #4a90e2;
   }
-  #dailyGame #showVerseBtn:hover {
-    background-color: #6a9ce0;
+  .btn-blue:hover:not(:disabled) {
+    background-color: #3a7bd5;
   }
-  #dailyGame #checkRefBtn {
-    background-color: #8cd48a;
+  /* Green button (Random game) */
+  .btn-green {
+    background: linear-gradient(135deg, #79c267, #a4d48a);
   }
-  #dailyGame #checkRefBtn:hover {
-    background-color: #7acb77;
+  .btn-green:hover:not(:disabled) {
+    background: linear-gradient(135deg, #6bb15e, #92c374);
   }
-  #dailyGame #checkRefBtn:disabled {
+  /* Disabled button style */
+  button:disabled {
     background-color: #ccc !important;
+    color: #666;
     cursor: not-allowed;
+    opacity: 0.7;
   }
-  #dailyGame #correctnessReport {
-    font-size: 1.1rem;
-    margin-top: 15px;
-    min-height: 30px;
+
+  /* Correctness report text */
+  #correctnessReport, #randomCorrectnessReport {
+    font-size: 1.2rem;
     font-weight: 600;
+    min-height: 30px;
+    margin-bottom: 10px;
+    color: #222;
+    text-align: center;
+    max-width: 800px;
   }
-  /* Progress bar */
-  #dailyGame .progress-container {
+
+  /* Progress bar container */
+  .progress-container {
     width: 100%;
-    max-width: 600px;
+    max-width: 800px;
     height: 14px;
     background-color: #e0e0e0;
     border-radius: 7px;
     overflow: hidden;
-    margin-top: 30px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-bottom: 20px;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
   }
-  #dailyGame .progress-bar {
+  .progress-bar {
     height: 100%;
     width: 0%;
-    background-color: #6bbf59;
+    background-color: #6bbf59; /* greenish */
     transition: width 0.4s ease;
   }
 
-  /* --- Random Game --- */
-  #randomGame {
+  /* Hide sections except active */
+  #dailyGame, #randomGame {
     display: none;
-    flex-direction: column;
-    background: linear-gradient(135deg, #ccffdd, #f2fff6, #b8fcc9);
-    border-radius: 15px;
-    padding: 30px;
-    box-sizing: border-box;
-    height: 100%;
-    color: #222;
-  }
-  #randomGame #verseBox {
-    background-color: #dff7e7;
-    border: 2px solid #a6d3a0;
-    border-radius: 12px;
-    font-size: 1.5rem;
-    padding: 25px;
-    min-height: 120px;
-    margin-bottom: 30px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-  }
-  #randomGame input {
-    font-size: 1.2rem;
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: 2px solid #a6d3a0;
     width: 100%;
-    max-width: 500px;
-    margin-bottom: 15px;
-    box-sizing: border-box;
-  }
-  #randomGame button {
-    font-size: 1.2rem;
-    padding: 12px 25px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    color: white;
-    margin: 10px 5px 0 5px;
-    background: linear-gradient(135deg, #79c267, #a4d48a);
-    transition: background 0.3s ease;
-  }
-  #randomGame button:hover {
-    background: linear-gradient(135deg, #6bb15e, #92c374);
-  }
-  #randomGame #checkRefBtn:disabled {
-    background-color: #ccc !important;
-    cursor: not-allowed;
-  }
-  #randomGame #correctnessReport {
-    font-size: 1.1rem;
-    margin-top: 15px;
-    min-height: 30px;
-    font-weight: 600;
+    align-items: center;
+    flex-direction: column;
   }
 
-  /* Responsive */
-  @media (max-width: 720px) {
-    #app {
-      min-height: auto;
-      height: auto;
+  /* Responsive adjustments */
+  @media (max-width: 900px) {
+    .wrapper {
+      flex-direction: column-reverse;
+      align-items: center;
+    }
+    .debug-box {
+      font-size: 20px;
+      padding: 15px 20px;
+      max-width: 100%;
+      width: 100%;
+    }
+    .container {
+      max-width: 500px;
+      width: 100%;
       padding: 15px;
     }
-    #dailyGame #verseBox,
-    #randomGame #verseBox {
+    #verseBox {
       font-size: 1.2rem;
-      padding: 20px;
       min-height: 100px;
-    }
-    #dailyGame input,
-    #randomGame input {
-      font-size: 1rem;
-      padding: 8px 12px;
+      padding: 15px;
       max-width: 100%;
     }
-    #dailyGame button,
-    #randomGame button {
+    input[type="text"] {
+      font-size: 1rem;
+      max-width: 100%;
+      padding: 10px;
+    }
+    button {
       font-size: 1rem;
       padding: 10px 18px;
+    }
+    .progress-container {
+      max-width: 100%;
+      height: 12px;
     }
   }
 </style>
 </head>
 <body>
-<div id="app">
-  <!-- Main Menu -->
-  <div id="mainMenu">
-    <h1>Scripture Guessing Game</h1>
-    <p>Choose your game mode:</p>
-    <button id="dailyBtn" class="menu-button" onclick="startDailyGame()">Daily Game</button>
-    <button id="randomBtn" class="menu-button" onclick="startRandomGame()">Random Verses Game</button>
+
+<div class="wrapper">
+
+  <!-- Main container: menu and games share this -->
+  <div class="container">
+
+    <!-- Main Menu -->
+    <div id="mainMenu">
+      <h1>Scripture Guessing Game</h1>
+      <p>Choose your game mode:</p>
+      <button id="dailyBtn" class="menu-button btn-blue" onclick="startDailyGame()">Daily Game</button>
+      <button id="randomBtn" class="menu-button btn-green" onclick="startRandomGame()">Random Verses Game</button>
+    </div>
+
+    <!-- Daily Game -->
+    <div id="dailyGame">
+      <div class="progress-container" aria-label="Daily progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div id="verseBox">Press "Show Verse" to start your daily challenge!</div>
+      <input type="text" id="dailyInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
+      <div class="button-row">
+        <button id="showVerseBtn" class="btn-blue" onclick="showDailyVerse()">Show Verse</button>
+        <button id="checkRefBtn" class="btn-green" onclick="checkDailyReference()" disabled>Check Reference</button>
+      </div>
+      <p id="correctnessReport"></p>
+      <button class="btn-blue" style="margin-top:15px;" onclick="goBack()">← Back to Menu</button>
+    </div>
+
+    <!-- Random Game -->
+    <div id="randomGame">
+      <div id="verseBox">Press "Show Verse" to start guessing a random verse!</div>
+      <input type="text" id="randomInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
+      <div class="button-row">
+        <button id="showRandomVerseBtn" class="btn-green" onclick="showRandomVerse()">Show Verse</button>
+        <button id="checkRandomRefBtn" class="btn-green" onclick="checkRandomReference()" disabled>Check Reference</button>
+      </div>
+      <p id="randomCorrectnessReport"></p>
+      <button class="btn-green" style="margin-top:15px;" onclick="goBack()">← Back to Menu</button>
+    </div>
+
   </div>
 
-  <!-- Daily Game -->
-  <div id="dailyGame">
-    <div id="verseBox">Press "Show Verse" to start your daily challenge!</div>
-    <input type="text" id="dailyInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
-    <div>
-      <button id="showVerseBtn" onclick="showDailyVerse()">Show Verse</button>
-      <button id="checkRefBtn" onclick="checkDailyReference()" disabled>Check Reference</button>
-    </div>
-    <p id="correctnessReport"></p>
-    <div class="progress-container">
-      <div class="progress-bar" id="progressBar"></div>
-    </div>
-    <button onclick="goBack()">← Back to Menu</button>
-  </div>
-
-  <!-- Random Game -->
-  <div id="randomGame">
-    <div id="verseBox">Press "Show Verse" to start guessing a random verse!</div>
-    <input type="text" id="randomInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
-    <div>
-      <button id="showRandomVerseBtn" onclick="showRandomVerse()">Show Verse</button>
-      <button id="checkRandomRefBtn" onclick="checkRandomReference()" disabled>Check Reference</button>
-    </div>
-    <p id="randomCorrectnessReport"></p>
-    <button onclick="goBack()">← Back to Menu</button>
+  <!-- Debug box on the side -->
+  <div class="debug-box" aria-live="polite" aria-atomic="true">
+    <p id="scoreDisplay">
+      Current Average: 0<br />
+      Total Score: 0<br />
+      Attempts: 0
+    </p>
   </div>
 </div>
 
 <script src="source.js"></script>
 <script>
-  // Variables shared between modes
-  // Assuming source.js defines arrays: scriptures[], references[]
-
-  // Main menu elements
+  // Elements
   const mainMenu = document.getElementById('mainMenu');
+
   // Daily mode elements
   const dailyGame = document.getElementById('dailyGame');
   const dailyVerseBox = dailyGame.querySelector('#verseBox');
@@ -297,7 +317,11 @@
   const randomCheckBtn = randomGame.querySelector('#checkRandomRefBtn');
   const randomReport = randomGame.querySelector('#randomCorrectnessReport');
 
-  // ----- MAIN MENU FUNCTIONS -----
+  // Scores for display and update in debug box
+  let scores = [];
+  let totalScore = 0;
+
+  // ---------- MAIN MENU ----------
   function startDailyGame() {
     mainMenu.style.display = 'none';
     dailyGame.style.display = 'flex';
@@ -317,24 +341,24 @@
     randomGame.style.display = 'none';
     mainMenu.style.display = 'flex';
     setBodyBackground(null);
+    resetDebug();
   }
 
-  // ----- BACKGROUND SWITCH -----
+  // ---------- BODY BACKGROUND ----------
   function setBodyBackground(isDaily) {
     if (isDaily === true) {
-      // Blue gradient for daily
+      // Blue gradient for daily game
       document.body.style.background = 'linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc)';
     } else if (isDaily === false) {
-      // Green gradient for random
+      // Green gradient for random game
       document.body.style.background = 'linear-gradient(135deg, #ccffdd, #f2fff6, #b8fcc9)';
     } else {
-      // Default neutral background for menu
+      // Default neutral background (menu)
       document.body.style.background = '#f0f4f8';
     }
   }
 
-  // -------- DAILY GAME LOGIC --------
-
+  // ---------- DAILY GAME LOGIC ----------
   let dailyIndexes = [];
   let dailyIndex = 0;
   let dailyScores = [];
@@ -372,6 +396,7 @@
     dailyCheckBtn.disabled = true;
     dailyShowBtn.disabled = false;
     updateProgressBar(0);
+    resetDebug();
   }
 
   function showDailyVerse() {
@@ -421,6 +446,7 @@
     dailyTotalScore += score;
     dailyIndex++;
     updateProgressBar((dailyIndex / dailyIndexes.length) * 100);
+    updateDebug(dailyTotalScore, dailyScores.length);
 
     dailyCheckBtn.disabled = true;
     dailyShowBtn.disabled = false;
@@ -431,7 +457,7 @@
     }
   }
 
-  // -------- RANDOM GAME LOGIC --------
+  // ---------- RANDOM GAME LOGIC ----------
   let randomCurrentIndex = null;
   let randomScores = [];
   let randomTotalScore = 0;
@@ -445,6 +471,7 @@
     randomReport.textContent = '';
     randomCheckBtn.disabled = true;
     randomShowBtn.disabled = false;
+    resetDebug();
   }
 
   function showRandomVerse() {
@@ -482,10 +509,25 @@
     randomScores.push(score);
     randomTotalScore += score;
 
+    updateDebug(randomTotalScore, randomScores.length);
+
     randomCheckBtn.disabled = true;
     randomShowBtn.disabled = false;
   }
 
+  // ---------- DEBUG SCORES DISPLAY ----------
+  const scoreDisplay = document.getElementById('scoreDisplay');
+  function updateDebug(total, attempts) {
+    const avg = attempts === 0 ? 0 : Math.round(total / attempts);
+    scoreDisplay.innerHTML = `
+      Current Average: ${avg}<br />
+      Total Score: ${total}<br />
+      Attempts: ${attempts}
+    `;
+  }
+  function resetDebug() {
+    updateDebug(0, 0);
+  }
 </script>
 </body>
 </html>
