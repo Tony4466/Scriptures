@@ -130,10 +130,9 @@
     background: linear-gradient(135deg, #d97721, #e78b33);
   }
 
-  /* Verse box styling (white) - narrower to fit container */
+  /* Verse box styling (white) - fits container */
   #verseBox {
     background-color: white;
-    border: 2px solid black;
     border-radius: 12px;
     font-size: 1.8rem;
     padding: 25px;
@@ -146,17 +145,18 @@
     color: #222;
   }
 
-  /* Input styling */
+  /* Input styling - no border */
   input[type="text"] {
     font-size: 1.4rem;
     padding: 12px 15px;
     border-radius: 8px;
-    border: 2px solid black;
+    border: none;
     width: 100%;
     max-width: 600px;
     box-sizing: border-box;
     margin-bottom: 15px;
     text-align: center;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
   }
 
   /* Buttons container for layout */
@@ -197,15 +197,22 @@
   .btn-orange:hover:not(:disabled) {
     background: linear-gradient(135deg, #d97721, #e78b33);
   }
-  /* Disabled button style: keep white text */
-  button:disabled {
+  /* Disabled button style for daily game: light blue */
+  #dailyGame button:disabled {
+    background-color: #b3d1ff !important;
+    color: white !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  /* Disabled button style for others (default) */
+  button:disabled:not(#dailyGame button:disabled) {
     background-color: #ccc !important;
     color: white !important;
     cursor: not-allowed;
     opacity: 0.7;
   }
 
-  /* Correctness report text */
+  /* Correctness report text moved above input */
   #correctnessReport, #randomCorrectnessReport, #customCorrectnessReport {
     font-size: 1.2rem;
     font-weight: 600;
@@ -214,6 +221,7 @@
     color: #222;
     text-align: center;
     max-width: 800px;
+    width: 100%;
   }
 
   /* Progress bar container */
@@ -309,36 +317,36 @@
         <div class="progress-bar" id="progressBar"></div>
       </div>
       <div id="verseBox">Press "Show Verse" to start your daily challenge!</div>
+      <p id="correctnessReport"></p>
       <input type="text" id="dailyInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
       <div class="button-row">
         <button id="showVerseBtn" class="btn-blue" onclick="showDailyVerse()">Show Verse</button>
         <button id="checkRefBtn" class="btn-blue" onclick="checkDailyReference()" disabled>Check Reference</button>
       </div>
-      <p id="correctnessReport"></p>
       <button class="btn-blue" style="margin-top:15px;" onclick="goBack()">← Back to Menu</button>
     </div>
 
     <!-- Random Game -->
     <div id="randomGame">
       <div id="verseBox">Press "Show Verse" to start guessing a random verse!</div>
+      <p id="randomCorrectnessReport"></p>
       <input type="text" id="randomInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
       <div class="button-row">
         <button id="showRandomVerseBtn" class="btn-green" onclick="showRandomVerse()">Show Verse</button>
         <button id="checkRandomRefBtn" class="btn-green" onclick="checkRandomReference()" disabled>Check Reference</button>
       </div>
-      <p id="randomCorrectnessReport"></p>
       <button class="btn-green" style="margin-top:15px;" onclick="goBack()">← Back to Menu</button>
     </div>
 
     <!-- Custom Game -->
     <div id="customGame">
       <div id="verseBox">Press "Show Verse" to start your custom game!</div>
+      <p id="customCorrectnessReport"></p>
       <input type="text" id="customInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
       <div class="button-row">
         <button id="showCustomVerseBtn" class="btn-orange" onclick="showCustomVerse()">Show Verse</button>
         <button id="checkCustomRefBtn" class="btn-orange" onclick="checkCustomReference()" disabled>Check Reference</button>
       </div>
-      <p id="customCorrectnessReport"></p>
       <button class="btn-orange" style="margin-top:15px;" onclick="goBack()">← Back to Menu</button>
     </div>
 
@@ -502,18 +510,13 @@
     dailyShowBtn.disabled = true;
   }
 
-  function updateProgressBar(value) {
-    progressBar.style.width = value + '%';
-  }
-
   function checkDailyReference() {
     const input = dailyInput.value.trim().toLowerCase();
     const allRefsLower = references.map(ref => ref.toLowerCase());
     const currentIdx = dailyIndexes[dailyIndex];
-    const correctRef = references[currentIdx].toLowerCase();
     let score = 0;
 
-    if (input === correctRef) {
+    if (input === references[currentIdx].toLowerCase()) {
       score = 1000;
       dailyReport.innerHTML = `✅ You're right! That was ${references[currentIdx]}. Score: 1000/1000`;
       dailyReport.style.color = 'green';
@@ -539,6 +542,10 @@
 
     dailyCheckBtn.disabled = true;
     dailyShowBtn.disabled = false;
+  }
+
+  function updateProgressBar(percentage) {
+    progressBar.style.width = percentage + '%';
   }
 
   // ---------- RANDOM GAME LOGIC ----------
@@ -685,5 +692,6 @@
     resetDebug();
   };
 </script>
+
 </body>
 </html>
