@@ -1,263 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Scripture Checker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verse Memorization</title>
+<style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding-left: 20px;
-      padding-right: 20px;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc);
     }
-
-    .wrapper {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      padding: 20px;
-      width: 100%;
-      max-width: 1200px;
+    h1 {
+        color: #333;
     }
-
-    .container {
-      text-align: center;
-      background-color: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 900px;
-      width: 100%;
-    }
-
-    .debug-box {
-      background-color: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      width: 100%;
-      font-size: 28px;
-      text-align: left;
-    }
-
-    /* Progress bar container */
-    .progress-container {
-      width: 100%;
-      height: 10px;
-      background-color: #e0e0e0;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-
-    /* Progress bar fill */
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background-color: #4caf50;
-      transition: width 0.4s ease;
-    }
-
-    #scriptureContents {
-      padding: 20px;
-      margin: 20px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      background-color: #fff8e7;
-      font-size: 28px;
-      min-height: 60px;
-      border: 2px solid #e0c68a;
-    }
-
-    #correctnessReport {
-      font-size: 20px;
-      color: #333;
-      min-height: 2px;
-      max-width: 900px;
-      width: 100%;
-      margin: 20px;
-      text-align: center;
-    }
-
-    input {
-      font-size: 28px;
-      padding: 8px;
-      width: 80%;
-      margin: 25px;
-    }
-
-    button {
-      font-size: 28px;
-      padding: 10px 20px;
-      margin: 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      color: white;
-    }
-
-    button:first-of-type {
-      background-color: #003366;
-    }
-
-    button:last-of-type {
-      background-color: #004d1a;
-    }
-
-    button:disabled {
-      background-color: #ccc !important;
-      color: #666;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-
-    @media (max-width: 900px) {
-      .wrapper {
-        flex-direction: column-reverse;
-        align-items: center;
-      }
-      .container {
+    .verse-box {
+        background-color: #f8f4e3; /* previous verse box color */
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 12px;
         max-width: 500px;
-      }
-      .debug-box {
-        font-size: 20px;
-      }
-      button {
-        font-size: 20px;
-      }
-      #scriptureContents {
-        font-size: 15px;
-        padding: 10px;
-        min-height: 30px;
-      }
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        font-size: 1.2em;
     }
-  </style>
+    .controls {
+        margin-top: 20px;
+    }
+    button {
+        padding: 10px 18px;
+        margin: 5px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background 0.3s ease;
+    }
+    .hide-btn {
+        background-color: #ffd6a5; /* soft orange */
+    }
+    .hide-btn:hover {
+        background-color: #ffc085;
+    }
+    .reveal-btn {
+        background-color: #bde0fe; /* soft blue */
+    }
+    .reveal-btn:hover {
+        background-color: #a4d4fd;
+    }
+    .progress-container {
+        margin: 20px auto;
+        max-width: 500px;
+        background-color: #eee;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 20px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .progress-bar {
+        height: 100%;
+        background-color: #8ecae6;
+        width: 0%;
+        transition: width 0.4s ease;
+    }
+</style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="container">
-      <!-- Progress bar -->
-      <div class="progress-container">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
 
-      <input type="text" id="userInput" placeholder="Type a reference..." autocomplete="off" spellcheck="false">
-      <p id="correctnessReport"></p>
-      <p id="scriptureContents">Click "Show Verse" to begin. You have 5 daily verses. Guess the reference for each verse shown.</p>
+<h1>Verse Memorization</h1>
 
-      <button id="showBtn" onclick="showNextVerse()">Show Verse</button>
-      <button id="checkBtn" onclick="checkReference()">Check Reference</button>
-    </div>
+<div class="verse-box" id="verseBox">
+    For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life. — John 3:16
+</div>
 
-    <div class="debug-box">
-      <p id="scoreDisplay">
-        Current Average: 0<br>
-        Total Score: 0<br>
-        Attempts: 0
-      </p>
-    </div>
-  </div>
+<div class="controls">
+    <button class="hide-btn" onclick="hideRandomWords()">Hide Words</button>
+    <button class="reveal-btn" onclick="revealWords()">Reveal Words</button>
+</div>
 
-  <!-- Load scriptures and references -->
-  <script src="source.js"></script>
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
 
-  <script>
-    let currentIndex = null;
-    let scores = [];
-    let totalScore = 0;
-    let versePointer = 0;
-    let dailyIndexes = [];
+<script>
+let verseText = document.getElementById("verseBox").innerText;
+let words = verseText.split(" ");
+let hiddenWords = Array(words.length).fill(false);
 
-    function getDailySeed() {
-      const today = new Date();
-      return today.getFullYear() * 1000 + today.getMonth() * 50 + today.getDate();
+function hideRandomWords() {
+    let wordsToHide = Math.ceil(words.length * 0.1);
+    let hiddenCount = hiddenWords.filter(h => h).length;
+
+    for (let i = 0; i < wordsToHide; i++) {
+        let idx = Math.floor(Math.random() * words.length);
+        hiddenWords[idx] = true;
     }
 
-    function seededRandom(seed) {
-      let x = Math.sin(seed) * 10000;
-      return x - Math.floor(x);
-    }
+    updateVerse();
+    updateProgress(hiddenCount + wordsToHide);
+}
 
-    function getDailyVerses() {
-      let seed = getDailySeed();
-      let indexes = [];
-      for (let i = 0; i < 5; i++) {
-        seed += i;
-        let index = Math.floor(seededRandom(seed) * scriptures.length);
-        indexes.push(index);
-      }
-      return indexes;
-    }
+function revealWords() {
+    hiddenWords = Array(words.length).fill(false);
+    updateVerse();
+    updateProgress(0);
+}
 
-    dailyIndexes = getDailyVerses();
+function updateVerse() {
+    let display = words.map((word, i) => hiddenWords[i] ? "_____" : word);
+    document.getElementById("verseBox").innerText = display.join(" ");
+}
 
-    function showNextVerse() {
-      if (versePointer >= dailyIndexes.length) {
-        document.getElementById("scriptureContents").innerText = "That's all for today! Come back tomorrow for new verses.";
-        document.getElementById("showBtn").disabled = true;
-        return;
-      }
+function updateProgress(hiddenCount) {
+    let percentage = (hiddenCount / words.length) * 100;
+    document.getElementById("progressBar").style.width = percentage + "%";
+}
+</script>
 
-      currentIndex = dailyIndexes[versePointer];
-      const verse = scriptures[currentIndex];
-      document.getElementById("scriptureContents").innerText = verse;
-      document.getElementById("correctnessReport").innerText = "";
-      document.getElementById("userInput").value = "";
-      document.getElementById("checkBtn").disabled = false;
-      document.getElementById("showBtn").disabled = true;
-    }
-
-    function updateProgressBar() {
-      const progress = ((versePointer) / dailyIndexes.length) * 100;
-      document.getElementById("progressBar").style.width = progress + "%";
-    }
-
-    function checkReference() {
-      const input = document.getElementById("userInput").value.trim().toLowerCase();
-      const messageBox = document.getElementById("correctnessReport");
-      const allRefsLower = references.map(ref => ref.toLowerCase());
-      const correctReference = references[currentIndex].toLowerCase();
-      let score = 0;
-
-      if (input === correctReference) {
-        score = 1000;
-        messageBox.innerHTML = `You're right! That was ${references[currentIndex]}. Score: 1000/1000`;
-      } else if (allRefsLower.includes(input)) {
-        const userIndex = allRefsLower.indexOf(input);
-        const distance = Math.abs(currentIndex - userIndex);
-        const decayBase = Math.pow(1 / 1000, 1 / 3000);
-        score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
-        messageBox.innerHTML = `You entered: "${references[userIndex]}"<br>
-        Correct answer: "${references[currentIndex]}"<br>
-        Score: ${score}/1000`;
-      } else {
-        messageBox.innerHTML = `"${input}" doesn't match any scripture reference. Check your spelling and try again.`;
-        return;
-      }
-
-      scores.push(score);
-      totalScore += score;
-      const average = totalScore / scores.length;
-      document.getElementById("scoreDisplay").innerHTML =
-        `Current Average: ${average.toFixed(0)}<br>` +
-        `Total Score: ${totalScore}<br>` +
-        `Attempts: ${scores.length}`;
-
-      versePointer++;
-      updateProgressBar();
-      document.getElementById("checkBtn").disabled = true;
-      document.getElementById("showBtn").disabled = false;
-    }
-
-    // Initialize progress bar at 0%
-    updateProgressBar();
-  </script>
 </body>
 </html>
