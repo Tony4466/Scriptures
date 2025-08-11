@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Scripture Guessing Game</title>
 <style>
-  /* Body and general background for each mode */
+  /* Body with neutral background */
   body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -18,7 +18,7 @@
     background: #f0f4f8; /* default menu background */
   }
 
-  /* Wrapper and layout like your original */
+  /* Wrapper: on menu, center container only and hide debug box */
   .wrapper {
     display: flex;
     gap: 20px;
@@ -27,6 +27,12 @@
     max-width: 1200px;
     width: 100%;
     box-sizing: border-box;
+  }
+
+  /* When menu is active: center container only */
+  .wrapper.menu-active {
+    justify-content: center;
+    align-items: center;
   }
 
   /* Main container for content */
@@ -52,10 +58,16 @@
     width: 100%;
     font-size: 28px;
     text-align: left;
+    transition: opacity 0.3s ease;
   }
-  /* Hidden utility */
-  .hidden {
-    display: none !important;
+
+  /* Hide debug box on menu */
+  .debug-box.hidden {
+    opacity: 0;
+    pointer-events: none;
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   /* Main menu inside container */
@@ -101,7 +113,7 @@
     background: linear-gradient(135deg, #6bb15e, #92c374);
   }
 
-  /* Verse box styling (white) - made narrower */
+  /* Verse box styling (white) - narrower to fit container */
   #verseBox {
     background-color: #fff8e7;
     border: 2px solid #e0c68a;
@@ -110,7 +122,7 @@
     padding: 25px;
     min-height: 120px;
     width: 100%;
-    max-width: 700px; /* was 800 */
+    max-width: 700px;
     margin-bottom: 20px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.1);
     text-align: center;
@@ -183,7 +195,7 @@
   /* Progress bar container */
   .progress-container {
     width: 100%;
-    max-width: 700px; /* match verse box width */
+    max-width: 700px;
     height: 14px;
     background-color: #e0e0e0;
     border-radius: 7px;
@@ -194,7 +206,7 @@
   .progress-bar {
     height: 100%;
     width: 0%;
-    background-color: #6bbf59; /* greenish */
+    background-color: #6bbf59;
     transition: width 0.4s ease;
   }
 
@@ -209,7 +221,7 @@
   /* Responsive adjustments */
   @media (max-width: 900px) {
     .wrapper {
-      flex-direction: column-reverse;
+      flex-direction: column;
       align-items: center;
     }
     .debug-box {
@@ -247,7 +259,7 @@
 </head>
 <body>
 
-<div class="wrapper">
+<div class="wrapper menu-active" id="wrapper">
 
   <!-- Main container: menu and games share this -->
   <div class="container">
@@ -290,7 +302,7 @@
   </div>
 
   <!-- Debug box on the side -->
-  <div class="debug-box" aria-live="polite" aria-atomic="true" id="debugBox">
+  <div class="debug-box hidden" aria-live="polite" aria-atomic="true" id="debugBox">
     <p id="scoreDisplay">
       Current Average: 0<br />
       Total Score: 0<br />
@@ -304,6 +316,7 @@
   // Elements
   const mainMenu = document.getElementById('mainMenu');
   const debugBox = document.getElementById('debugBox');
+  const wrapper = document.getElementById('wrapper');
 
   // Daily mode elements
   const dailyGame = document.getElementById('dailyGame');
@@ -331,6 +344,7 @@
     mainMenu.style.display = 'none';
     dailyGame.style.display = 'flex';
     debugBox.classList.remove('hidden');
+    wrapper.classList.remove('menu-active');
     resetDailyGame();
     setBodyBackground(true);
   }
@@ -339,6 +353,7 @@
     mainMenu.style.display = 'none';
     randomGame.style.display = 'flex';
     debugBox.classList.remove('hidden');
+    wrapper.classList.remove('menu-active');
     resetRandomGame();
     setBodyBackground(false);
   }
@@ -348,6 +363,7 @@
     randomGame.style.display = 'none';
     mainMenu.style.display = 'flex';
     debugBox.classList.add('hidden');
+    wrapper.classList.add('menu-active');
     setBodyBackground(null);
     resetDebug();
   }
@@ -516,26 +532,30 @@
 
     randomScores.push(score);
     randomTotalScore += score;
-
     updateDebug(randomTotalScore, randomScores.length);
 
     randomCheckBtn.disabled = true;
     randomShowBtn.disabled = false;
   }
 
-  // ---------- DEBUG SCORES DISPLAY ----------
-  const scoreDisplay = document.getElementById('scoreDisplay');
+  // ---------- DEBUG UPDATE ----------
   function updateDebug(total, attempts) {
-    const avg = attempts === 0 ? 0 : Math.round(total / attempts);
-    scoreDisplay.innerHTML = `
+    let avg = attempts === 0 ? 0 : Math.round(total / attempts);
+    document.getElementById('scoreDisplay').innerHTML = `
       Current Average: ${avg}<br />
       Total Score: ${total}<br />
       Attempts: ${attempts}
     `;
   }
+
   function resetDebug() {
-    updateDebug(0, 0);
+    document.getElementById('scoreDisplay').innerHTML = `
+      Current Average: 0<br />
+      Total Score: 0<br />
+      Attempts: 0
+    `;
   }
 </script>
+
 </body>
 </html>
