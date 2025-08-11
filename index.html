@@ -112,6 +112,12 @@
   #randomBtn:hover {
     background: linear-gradient(135deg, #6bb15e, #92c374);
   }
+  #customBtn {
+    background: linear-gradient(135deg, #f18d48, #f9ac64); /* orange gradient */
+  }
+  #customBtn:hover {
+    background: linear-gradient(135deg, #d97721, #e78b33);
+  }
 
   /* Verse box styling (white) - narrower to fit container */
   #verseBox {
@@ -173,6 +179,13 @@
   .btn-green:hover:not(:disabled) {
     background: linear-gradient(135deg, #6bb15e, #92c374);
   }
+  /* Orange button (Custom game) */
+  .btn-orange {
+    background: linear-gradient(135deg, #f18d48, #f9ac64);
+  }
+  .btn-orange:hover:not(:disabled) {
+    background: linear-gradient(135deg, #d97721, #e78b33);
+  }
   /* Disabled button style */
   button:disabled {
     background-color: #ccc !important;
@@ -182,7 +195,7 @@
   }
 
   /* Correctness report text */
-  #correctnessReport, #randomCorrectnessReport {
+  #correctnessReport, #randomCorrectnessReport, #customCorrectnessReport {
     font-size: 1.2rem;
     font-weight: 600;
     min-height: 30px;
@@ -211,7 +224,7 @@
   }
 
   /* Hide sections except active */
-  #dailyGame, #randomGame {
+  #dailyGame, #randomGame, #customGame {
     display: none;
     width: 100%;
     align-items: center;
@@ -270,6 +283,7 @@
       <p>Choose your game mode:</p>
       <button id="dailyBtn" class="menu-button btn-blue" onclick="startDailyGame()">Daily Game</button>
       <button id="randomBtn" class="menu-button btn-green" onclick="startRandomGame()">Random Verses Game</button>
+      <button id="customBtn" class="menu-button btn-orange" onclick="startCustomGame()">Custom Game</button>
     </div>
 
     <!-- Daily Game -->
@@ -297,6 +311,18 @@
       </div>
       <p id="randomCorrectnessReport"></p>
       <button class="btn-green" style="margin-top:15px;" onclick="goBack()">← Back to Menu</button>
+    </div>
+
+    <!-- Custom Game -->
+    <div id="customGame">
+      <div id="verseBox">Press "Show Verse" to start your custom game!</div>
+      <input type="text" id="customInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
+      <div class="button-row">
+        <button id="showCustomVerseBtn" class="btn-orange" onclick="showCustomVerse()">Show Verse</button>
+        <button id="checkCustomRefBtn" class="btn-orange" onclick="checkCustomReference()" disabled>Check Reference</button>
+      </div>
+      <p id="customCorrectnessReport"></p>
+      <button class="btn-orange" style="margin-top:15px;" onclick="goBack()">← Back to Menu</button>
     </div>
 
   </div>
@@ -335,6 +361,14 @@
   const randomCheckBtn = randomGame.querySelector('#checkRandomRefBtn');
   const randomReport = randomGame.querySelector('#randomCorrectnessReport');
 
+  // Custom mode elements
+  const customGame = document.getElementById('customGame');
+  const customVerseBox = customGame.querySelector('#verseBox');
+  const customInput = customGame.querySelector('#customInput');
+  const customShowBtn = customGame.querySelector('#showCustomVerseBtn');
+  const customCheckBtn = customGame.querySelector('#checkCustomRefBtn');
+  const customReport = customGame.querySelector('#customCorrectnessReport');
+
   // Scores for display and update in debug box
   let scores = [];
   let totalScore = 0;
@@ -358,9 +392,19 @@
     setBodyBackground(false);
   }
 
+  function startCustomGame() {
+    mainMenu.style.display = 'none';
+    customGame.style.display = 'flex';
+    debugBox.classList.remove('hidden');
+    wrapper.classList.remove('menu-active');
+    resetCustomGame();
+    setBodyBackground('custom');
+  }
+
   function goBack() {
     dailyGame.style.display = 'none';
     randomGame.style.display = 'none';
+    customGame.style.display = 'none';
     mainMenu.style.display = 'flex';
     debugBox.classList.add('hidden');
     wrapper.classList.add('menu-active');
@@ -369,13 +413,16 @@
   }
 
   // ---------- BODY BACKGROUND ----------
-  function setBodyBackground(isDaily) {
-    if (isDaily === true) {
+  function setBodyBackground(mode) {
+    if (mode === true) {
       // Blue gradient for daily game
       document.body.style.background = 'linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc)';
-    } else if (isDaily === false) {
+    } else if (mode === false) {
       // Green gradient for random game
       document.body.style.background = 'linear-gradient(135deg, #ccffdd, #f2fff6, #b8fcc9)';
+    } else if (mode === 'custom') {
+      // Orange gradient for custom game
+      document.body.style.background = 'linear-gradient(135deg, #fce5d0, #fff7e6, #f9d9b1)';
     } else {
       // Default neutral background (menu)
       document.body.style.background = '#f0f4f8';
@@ -468,17 +515,13 @@
 
     dailyScores.push(score);
     dailyTotalScore += score;
+    updateDebug(dailyTotalScore, dailyScores.length);
+
     dailyIndex++;
     updateProgressBar((dailyIndex / dailyIndexes.length) * 100);
-    updateDebug(dailyTotalScore, dailyScores.length);
 
     dailyCheckBtn.disabled = true;
     dailyShowBtn.disabled = false;
-
-    if (dailyIndex >= dailyIndexes.length) {
-      dailyShowBtn.disabled = true;
-      dailyReport.innerHTML += "<br>🎉 You've completed all daily verses!";
-    }
   }
 
   // ---------- RANDOM GAME LOGIC ----------
@@ -538,6 +581,63 @@
     randomShowBtn.disabled = false;
   }
 
+  // ---------- CUSTOM GAME LOGIC (same as random for now) ----------
+  let customCurrentIndex = null;
+  let customScores = [];
+  let customTotalScore = 0;
+
+  function resetCustomGame() {
+    customCurrentIndex = null;
+    customScores = [];
+    customTotalScore = 0;
+    customVerseBox.textContent = 'Press "Show Verse" to start your custom game!';
+    customInput.value = '';
+    customReport.textContent = '';
+    customCheckBtn.disabled = true;
+    customShowBtn.disabled = false;
+    resetDebug();
+  }
+
+  function showCustomVerse() {
+    customCurrentIndex = Math.floor(Math.random() * scriptures.length);
+    customVerseBox.textContent = scriptures[customCurrentIndex];
+    customInput.value = '';
+    customReport.textContent = '';
+    customCheckBtn.disabled = false;
+    customShowBtn.disabled = true;
+  }
+
+  function checkCustomReference() {
+    const input = customInput.value.trim().toLowerCase();
+    const allRefsLower = references.map(ref => ref.toLowerCase());
+    const correctRef = references[customCurrentIndex].toLowerCase();
+    let score = 0;
+
+    if (input === correctRef) {
+      score = 1000;
+      customReport.innerHTML = `✅ You're right! That was ${references[customCurrentIndex]}. Score: 1000/1000`;
+      customReport.style.color = 'green';
+    } else if (allRefsLower.includes(input)) {
+      const userIdx = allRefsLower.indexOf(input);
+      const distance = Math.abs(customCurrentIndex - userIdx);
+      const decayBase = Math.pow(1 / 1000, 1 / 3000);
+      score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
+      customReport.innerHTML = `❌ You entered: "${references[userIdx]}"<br>Correct answer: "${references[customCurrentIndex]}"<br>Score: ${score}/1000`;
+      customReport.style.color = 'red';
+    } else {
+      customReport.innerHTML = `"${input}" doesn't match any scripture reference. Check your spelling and try again.`;
+      customReport.style.color = 'black';
+      return;
+    }
+
+    customScores.push(score);
+    customTotalScore += score;
+    updateDebug(customTotalScore, customScores.length);
+
+    customCheckBtn.disabled = true;
+    customShowBtn.disabled = false;
+  }
+
   // ---------- DEBUG UPDATE ----------
   function updateDebug(total, attempts) {
     let avg = attempts === 0 ? 0 : Math.round(total / attempts);
@@ -555,7 +655,17 @@
       Attempts: 0
     `;
   }
-</script>
 
+  // Initialize menu and debug state
+  window.onload = () => {
+    mainMenu.style.display = 'flex';
+    dailyGame.style.display = 'none';
+    randomGame.style.display = 'none';
+    customGame.style.display = 'none';
+    debugBox.classList.add('hidden');
+    wrapper.classList.add('menu-active');
+    setBodyBackground(null);
+  };
+</script>
 </body>
 </html>
