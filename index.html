@@ -53,6 +53,10 @@
     font-size: 28px;
     text-align: left;
   }
+  /* Hidden utility */
+  .hidden {
+    display: none !important;
+  }
 
   /* Main menu inside container */
   #mainMenu {
@@ -97,7 +101,7 @@
     background: linear-gradient(135deg, #6bb15e, #92c374);
   }
 
-  /* Verse box styling (white) */
+  /* Verse box styling (white) - made narrower */
   #verseBox {
     background-color: #fff8e7;
     border: 2px solid #e0c68a;
@@ -106,7 +110,7 @@
     padding: 25px;
     min-height: 120px;
     width: 100%;
-    max-width: 800px;
+    max-width: 700px; /* was 800 */
     margin-bottom: 20px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.1);
     text-align: center;
@@ -179,7 +183,7 @@
   /* Progress bar container */
   .progress-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 700px; /* match verse box width */
     height: 14px;
     background-color: #e0e0e0;
     border-radius: 7px;
@@ -286,7 +290,7 @@
   </div>
 
   <!-- Debug box on the side -->
-  <div class="debug-box" aria-live="polite" aria-atomic="true">
+  <div class="debug-box" aria-live="polite" aria-atomic="true" id="debugBox">
     <p id="scoreDisplay">
       Current Average: 0<br />
       Total Score: 0<br />
@@ -299,6 +303,7 @@
 <script>
   // Elements
   const mainMenu = document.getElementById('mainMenu');
+  const debugBox = document.getElementById('debugBox');
 
   // Daily mode elements
   const dailyGame = document.getElementById('dailyGame');
@@ -325,6 +330,7 @@
   function startDailyGame() {
     mainMenu.style.display = 'none';
     dailyGame.style.display = 'flex';
+    debugBox.classList.remove('hidden');
     resetDailyGame();
     setBodyBackground(true);
   }
@@ -332,6 +338,7 @@
   function startRandomGame() {
     mainMenu.style.display = 'none';
     randomGame.style.display = 'flex';
+    debugBox.classList.remove('hidden');
     resetRandomGame();
     setBodyBackground(false);
   }
@@ -340,6 +347,7 @@
     dailyGame.style.display = 'none';
     randomGame.style.display = 'none';
     mainMenu.style.display = 'flex';
+    debugBox.classList.add('hidden');
     setBodyBackground(null);
     resetDebug();
   }
