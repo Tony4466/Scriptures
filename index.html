@@ -1,272 +1,491 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Scripture Checker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding-left: 20px;
-      padding-right: 20px;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scripture Guessing Game</title>
+<style>
+  /* Shared styles */
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #app {
+    width: 90vw;
+    max-width: 900px;
+    min-height: 600px;
+    border-radius: 15px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    color: #222;
+  }
 
-    .wrapper {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
+  /* --- Main Menu --- */
+  #mainMenu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+  #mainMenu h1 {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    color: #222;
+  }
+  #mainMenu p {
+    max-width: 450px;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    color: #444;
+  }
+  .menu-button {
+    width: 220px;
+    padding: 15px 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  #dailyBtn {
+    background-color: #4a90e2;
+  }
+  #dailyBtn:hover {
+    background-color: #3a7bd5;
+  }
+  #randomBtn {
+    background: linear-gradient(135deg, #79c267, #a4d48a);
+    border: none;
+  }
+  #randomBtn:hover {
+    background: linear-gradient(135deg, #6bb15e, #92c374);
+  }
+
+  /* --- Daily Game --- */
+  #dailyGame {
+    display: none;
+    flex-direction: column;
+    background: linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc);
+    border-radius: 15px;
+    padding: 30px;
+    box-sizing: border-box;
+    height: 100%;
+    color: #222;
+  }
+  #dailyGame #verseBox {
+    background-color: #eaf4ff;
+    border: 2px solid #b0c8e0;
+    border-radius: 12px;
+    font-size: 1.5rem;
+    padding: 25px;
+    min-height: 120px;
+    margin-bottom: 30px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  }
+  #dailyGame input {
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 2px solid #b0c8e0;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+  #dailyGame button {
+    font-size: 1.2rem;
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    margin: 10px 5px 0 5px;
+    transition: background-color 0.3s ease;
+  }
+  #dailyGame #showVerseBtn {
+    background-color: #7daef5;
+  }
+  #dailyGame #showVerseBtn:hover {
+    background-color: #6a9ce0;
+  }
+  #dailyGame #checkRefBtn {
+    background-color: #8cd48a;
+  }
+  #dailyGame #checkRefBtn:hover {
+    background-color: #7acb77;
+  }
+  #dailyGame #checkRefBtn:disabled {
+    background-color: #ccc !important;
+    cursor: not-allowed;
+  }
+  #dailyGame #correctnessReport {
+    font-size: 1.1rem;
+    margin-top: 15px;
+    min-height: 30px;
+    font-weight: 600;
+  }
+  /* Progress bar */
+  #dailyGame .progress-container {
+    width: 100%;
+    max-width: 600px;
+    height: 14px;
+    background-color: #e0e0e0;
+    border-radius: 7px;
+    overflow: hidden;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  }
+  #dailyGame .progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #6bbf59;
+    transition: width 0.4s ease;
+  }
+
+  /* --- Random Game --- */
+  #randomGame {
+    display: none;
+    flex-direction: column;
+    background: linear-gradient(135deg, #ccffdd, #f2fff6, #b8fcc9);
+    border-radius: 15px;
+    padding: 30px;
+    box-sizing: border-box;
+    height: 100%;
+    color: #222;
+  }
+  #randomGame #verseBox {
+    background-color: #dff7e7;
+    border: 2px solid #a6d3a0;
+    border-radius: 12px;
+    font-size: 1.5rem;
+    padding: 25px;
+    min-height: 120px;
+    margin-bottom: 30px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  }
+  #randomGame input {
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 2px solid #a6d3a0;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+  #randomGame button {
+    font-size: 1.2rem;
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    margin: 10px 5px 0 5px;
+    background: linear-gradient(135deg, #79c267, #a4d48a);
+    transition: background 0.3s ease;
+  }
+  #randomGame button:hover {
+    background: linear-gradient(135deg, #6bb15e, #92c374);
+  }
+  #randomGame #checkRefBtn:disabled {
+    background-color: #ccc !important;
+    cursor: not-allowed;
+  }
+  #randomGame #correctnessReport {
+    font-size: 1.1rem;
+    margin-top: 15px;
+    min-height: 30px;
+    font-weight: 600;
+  }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    #app {
+      min-height: auto;
+      height: auto;
+      padding: 15px;
+    }
+    #dailyGame #verseBox,
+    #randomGame #verseBox {
+      font-size: 1.2rem;
       padding: 20px;
-      width: 100%;
-      max-width: 1200px;
+      min-height: 100px;
     }
-
-    .container {
-      text-align: center;
-      background-color: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 900px;
-      width: 100%;
+    #dailyGame input,
+    #randomGame input {
+      font-size: 1rem;
+      padding: 8px 12px;
+      max-width: 100%;
     }
-
-    .debug-box {
-      background-color: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      width: 100%;
-      font-size: 28px;
-      text-align: left;
+    #dailyGame button,
+    #randomGame button {
+      font-size: 1rem;
+      padding: 10px 18px;
     }
-
-    /* Progress bar container */
-    .progress-container {
-      width: 100%;
-      height: 10px;
-      background-color: #e0e0e0;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-
-    /* Progress bar fill */
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background-color: #6bbf59; /* softer green */
-      transition: width 0.4s ease;
-    }
-
-    /* Verse box */
-    #scriptureContents {
-      padding: 20px;
-      margin: 20px;
-      border-radius: 10px;
-      background-color: #eaf4ff; /* softer light blue */
-      font-size: 28px;
-      min-height: 60px;
-      border: 2px solid #b0c8e0;
-    }
-
-    #correctnessReport {
-      font-size: 20px;
-      color: #333;
-      min-height: 2px;
-      max-width: 900px;
-      width: 100%;
-      margin: 20px;
-      text-align: center;
-    }
-
-    input {
-      font-size: 28px;
-      padding: 8px;
-      width: 80%;
-      margin: 25px;
-    }
-
-    button {
-      font-size: 28px;
-      padding: 10px 20px;
-      margin: 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      color: white;
-      transition: background-color 0.3s ease;
-    }
-
-    button:first-of-type {
-      background-color: #7daef5; /* softer blue */
-    }
-
-    button:last-of-type {
-      background-color: #8cd48a; /* softer green */
-    }
-
-    button:first-of-type:hover {
-      background-color: #6a9ce0;
-    }
-
-    button:last-of-type:hover {
-      background-color: #7acb77;
-    }
-
-    button:disabled {
-      background-color: #ccc !important;
-      color: #666;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-
-    @media (max-width: 900px) {
-      .wrapper {
-        flex-direction: column-reverse;
-        align-items: center;
-      }
-      .container {
-        max-width: 500px;
-      }
-      .debug-box {
-        font-size: 20px;
-      }
-      button {
-        font-size: 20px;
-      }
-      #scriptureContents {
-        font-size: 15px;
-        padding: 10px;
-        min-height: 30px;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="container">
-      <!-- Progress bar -->
-      <div class="progress-container">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
-
-      <input type="text" id="userInput" placeholder="Type a reference..." autocomplete="off" spellcheck="false">
-      <p id="correctnessReport"></p>
-      <p id="scriptureContents">Click "Show Verse" to begin. You have 5 daily verses. Guess the reference for each verse shown.</p>
-
-      <button id="showBtn" onclick="showNextVerse()">Show Verse</button>
-      <button id="checkBtn" onclick="checkReference()">Check Reference</button>
-    </div>
-
-    <div class="debug-box">
-      <p id="scoreDisplay">
-        Current Average: 0<br>
-        Total Score: 0<br>
-        Attempts: 0
-      </p>
-    </div>
+<div id="app">
+  <!-- Main Menu -->
+  <div id="mainMenu">
+    <h1>Scripture Guessing Game</h1>
+    <p>Choose your game mode:</p>
+    <button id="dailyBtn" class="menu-button" onclick="startDailyGame()">Daily Game</button>
+    <button id="randomBtn" class="menu-button" onclick="startRandomGame()">Random Verses Game</button>
   </div>
 
-  <!-- Load scriptures and references -->
-  <script src="source.js"></script>
+  <!-- Daily Game -->
+  <div id="dailyGame">
+    <div id="verseBox">Press "Show Verse" to start your daily challenge!</div>
+    <input type="text" id="dailyInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
+    <div>
+      <button id="showVerseBtn" onclick="showDailyVerse()">Show Verse</button>
+      <button id="checkRefBtn" onclick="checkDailyReference()" disabled>Check Reference</button>
+    </div>
+    <p id="correctnessReport"></p>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <button onclick="goBack()">← Back to Menu</button>
+  </div>
 
-  <script>
-    let currentIndex = null;
-    let scores = [];
-    let totalScore = 0;
-    let versePointer = 0;
-    let dailyIndexes = [];
+  <!-- Random Game -->
+  <div id="randomGame">
+    <div id="verseBox">Press "Show Verse" to start guessing a random verse!</div>
+    <input type="text" id="randomInput" placeholder="Type the reference here..." autocomplete="off" spellcheck="false" />
+    <div>
+      <button id="showRandomVerseBtn" onclick="showRandomVerse()">Show Verse</button>
+      <button id="checkRandomRefBtn" onclick="checkRandomReference()" disabled>Check Reference</button>
+    </div>
+    <p id="randomCorrectnessReport"></p>
+    <button onclick="goBack()">← Back to Menu</button>
+  </div>
+</div>
 
-    function getDailySeed() {
-      const today = new Date();
-      return today.getFullYear() * 1000 + today.getMonth() * 50 + today.getDate();
+<script src="source.js"></script>
+<script>
+  // Variables shared between modes
+  // Assuming source.js defines arrays: scriptures[], references[]
+
+  // Main menu elements
+  const mainMenu = document.getElementById('mainMenu');
+  // Daily mode elements
+  const dailyGame = document.getElementById('dailyGame');
+  const dailyVerseBox = dailyGame.querySelector('#verseBox');
+  const dailyInput = dailyGame.querySelector('#dailyInput');
+  const dailyShowBtn = dailyGame.querySelector('#showVerseBtn');
+  const dailyCheckBtn = dailyGame.querySelector('#checkRefBtn');
+  const dailyReport = dailyGame.querySelector('#correctnessReport');
+  const progressBar = dailyGame.querySelector('#progressBar');
+
+  // Random mode elements
+  const randomGame = document.getElementById('randomGame');
+  const randomVerseBox = randomGame.querySelector('#verseBox');
+  const randomInput = randomGame.querySelector('#randomInput');
+  const randomShowBtn = randomGame.querySelector('#showRandomVerseBtn');
+  const randomCheckBtn = randomGame.querySelector('#checkRandomRefBtn');
+  const randomReport = randomGame.querySelector('#randomCorrectnessReport');
+
+  // ----- MAIN MENU FUNCTIONS -----
+  function startDailyGame() {
+    mainMenu.style.display = 'none';
+    dailyGame.style.display = 'flex';
+    resetDailyGame();
+    setBodyBackground(true);
+  }
+
+  function startRandomGame() {
+    mainMenu.style.display = 'none';
+    randomGame.style.display = 'flex';
+    resetRandomGame();
+    setBodyBackground(false);
+  }
+
+  function goBack() {
+    dailyGame.style.display = 'none';
+    randomGame.style.display = 'none';
+    mainMenu.style.display = 'flex';
+    setBodyBackground(null);
+  }
+
+  // ----- BACKGROUND SWITCH -----
+  function setBodyBackground(isDaily) {
+    if (isDaily === true) {
+      // Blue gradient for daily
+      document.body.style.background = 'linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc)';
+    } else if (isDaily === false) {
+      // Green gradient for random
+      document.body.style.background = 'linear-gradient(135deg, #ccffdd, #f2fff6, #b8fcc9)';
+    } else {
+      // Default neutral background for menu
+      document.body.style.background = '#f0f4f8';
     }
+  }
 
-    function seededRandom(seed) {
-      let x = Math.sin(seed) * 10000;
-      return x - Math.floor(x);
+  // -------- DAILY GAME LOGIC --------
+
+  let dailyIndexes = [];
+  let dailyIndex = 0;
+  let dailyScores = [];
+  let dailyTotalScore = 0;
+
+  function getDailySeed() {
+    const today = new Date();
+    return today.getFullYear() * 1000 + today.getMonth() * 50 + today.getDate();
+  }
+
+  function seededRandom(seed) {
+    let x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  }
+
+  function getDailyVerses() {
+    let seed = getDailySeed();
+    let indexes = [];
+    for (let i = 0; i < 5; i++) {
+      seed += i;
+      let index = Math.floor(seededRandom(seed) * scriptures.length);
+      indexes.push(index);
     }
+    return indexes;
+  }
 
-    function getDailyVerses() {
-      let seed = getDailySeed();
-      let indexes = [];
-      for (let i = 0; i < 5; i++) {
-        seed += i;
-        let index = Math.floor(seededRandom(seed) * scriptures.length);
-        indexes.push(index);
-      }
-      return indexes;
-    }
-
+  function resetDailyGame() {
     dailyIndexes = getDailyVerses();
+    dailyIndex = 0;
+    dailyScores = [];
+    dailyTotalScore = 0;
+    dailyVerseBox.textContent = 'Press "Show Verse" to start your daily challenge!';
+    dailyInput.value = '';
+    dailyReport.textContent = '';
+    dailyCheckBtn.disabled = true;
+    dailyShowBtn.disabled = false;
+    updateProgressBar(0);
+  }
 
-    function showNextVerse() {
-      if (versePointer >= dailyIndexes.length) {
-        document.getElementById("scriptureContents").innerText = "That's all for today! Come back tomorrow for new verses.";
-        document.getElementById("showBtn").disabled = true;
-        return;
-      }
+  function showDailyVerse() {
+    if (dailyIndex >= dailyIndexes.length) {
+      dailyVerseBox.textContent = "That's all for today! Come back tomorrow for new verses.";
+      dailyShowBtn.disabled = true;
+      dailyCheckBtn.disabled = true;
+      return;
+    }
+    const currentIdx = dailyIndexes[dailyIndex];
+    dailyVerseBox.textContent = scriptures[currentIdx];
+    dailyInput.value = '';
+    dailyReport.textContent = '';
+    dailyCheckBtn.disabled = false;
+    dailyShowBtn.disabled = true;
+  }
 
-      currentIndex = dailyIndexes[versePointer];
-      const verse = scriptures[currentIndex];
-      document.getElementById("scriptureContents").innerText = verse;
-      document.getElementById("correctnessReport").innerText = "";
-      document.getElementById("userInput").value = "";
-      document.getElementById("checkBtn").disabled = false;
-      document.getElementById("showBtn").disabled = true;
+  function updateProgressBar(value) {
+    progressBar.style.width = value + '%';
+  }
+
+  function checkDailyReference() {
+    const input = dailyInput.value.trim().toLowerCase();
+    const allRefsLower = references.map(ref => ref.toLowerCase());
+    const currentIdx = dailyIndexes[dailyIndex];
+    const correctRef = references[currentIdx].toLowerCase();
+    let score = 0;
+
+    if (input === correctRef) {
+      score = 1000;
+      dailyReport.innerHTML = `✅ You're right! That was ${references[currentIdx]}. Score: 1000/1000`;
+      dailyReport.style.color = 'green';
+    } else if (allRefsLower.includes(input)) {
+      const userIdx = allRefsLower.indexOf(input);
+      const distance = Math.abs(currentIdx - userIdx);
+      const decayBase = Math.pow(1 / 1000, 1 / 3000);
+      score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
+      dailyReport.innerHTML = `❌ You entered: "${references[userIdx]}"<br>Correct answer: "${references[currentIdx]}"<br>Score: ${score}/1000`;
+      dailyReport.style.color = 'red';
+    } else {
+      dailyReport.innerHTML = `"${input}" doesn't match any scripture reference. Check your spelling and try again.`;
+      dailyReport.style.color = 'black';
+      return;
     }
 
-    function updateProgressBar() {
-      const progress = ((versePointer) / dailyIndexes.length) * 100;
-      document.getElementById("progressBar").style.width = progress + "%";
+    dailyScores.push(score);
+    dailyTotalScore += score;
+    dailyIndex++;
+    updateProgressBar((dailyIndex / dailyIndexes.length) * 100);
+
+    dailyCheckBtn.disabled = true;
+    dailyShowBtn.disabled = false;
+
+    if (dailyIndex >= dailyIndexes.length) {
+      dailyShowBtn.disabled = true;
+      dailyReport.innerHTML += "<br>🎉 You've completed all daily verses!";
+    }
+  }
+
+  // -------- RANDOM GAME LOGIC --------
+  let randomCurrentIndex = null;
+  let randomScores = [];
+  let randomTotalScore = 0;
+
+  function resetRandomGame() {
+    randomCurrentIndex = null;
+    randomScores = [];
+    randomTotalScore = 0;
+    randomVerseBox.textContent = 'Press "Show Verse" to start guessing a random verse!';
+    randomInput.value = '';
+    randomReport.textContent = '';
+    randomCheckBtn.disabled = true;
+    randomShowBtn.disabled = false;
+  }
+
+  function showRandomVerse() {
+    randomCurrentIndex = Math.floor(Math.random() * scriptures.length);
+    randomVerseBox.textContent = scriptures[randomCurrentIndex];
+    randomInput.value = '';
+    randomReport.textContent = '';
+    randomCheckBtn.disabled = false;
+    randomShowBtn.disabled = true;
+  }
+
+  function checkRandomReference() {
+    const input = randomInput.value.trim().toLowerCase();
+    const allRefsLower = references.map(ref => ref.toLowerCase());
+    const correctRef = references[randomCurrentIndex].toLowerCase();
+    let score = 0;
+
+    if (input === correctRef) {
+      score = 1000;
+      randomReport.innerHTML = `✅ You're right! That was ${references[randomCurrentIndex]}. Score: 1000/1000`;
+      randomReport.style.color = 'green';
+    } else if (allRefsLower.includes(input)) {
+      const userIdx = allRefsLower.indexOf(input);
+      const distance = Math.abs(randomCurrentIndex - userIdx);
+      const decayBase = Math.pow(1 / 1000, 1 / 3000);
+      score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
+      randomReport.innerHTML = `❌ You entered: "${references[userIdx]}"<br>Correct answer: "${references[randomCurrentIndex]}"<br>Score: ${score}/1000`;
+      randomReport.style.color = 'red';
+    } else {
+      randomReport.innerHTML = `"${input}" doesn't match any scripture reference. Check your spelling and try again.`;
+      randomReport.style.color = 'black';
+      return;
     }
 
-    function checkReference() {
-      const input = document.getElementById("userInput").value.trim().toLowerCase();
-      const messageBox = document.getElementById("correctnessReport");
-      const allRefsLower = references.map(ref => ref.toLowerCase());
-      const correctReference = references[currentIndex].toLowerCase();
-      let score = 0;
+    randomScores.push(score);
+    randomTotalScore += score;
 
-      if (input === correctReference) {
-        score = 1000;
-        messageBox.innerHTML = `You're right! That was ${references[currentIndex]}. Score: 1000/1000`;
-      } else if (allRefsLower.includes(input)) {
-        const userIndex = allRefsLower.indexOf(input);
-        const distance = Math.abs(currentIndex - userIndex);
-        const decayBase = Math.pow(1 / 1000, 1 / 3000);
-        score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
-        messageBox.innerHTML = `You entered: "${references[userIndex]}"<br>
-        Correct answer: "${references[currentIndex]}"<br>
-        Score: ${score}/1000`;
-      } else {
-        messageBox.innerHTML = `"${input}" doesn't match any scripture reference. Check your spelling and try again.`;
-        return;
-      }
+    randomCheckBtn.disabled = true;
+    randomShowBtn.disabled = false;
+  }
 
-      scores.push(score);
-      totalScore += score;
-      const average = totalScore / scores.length;
-      document.getElementById("scoreDisplay").innerHTML =
-        `Current Average: ${average.toFixed(0)}<br>` +
-        `Total Score: ${totalScore}<br>` +
-        `Attempts: ${scores.length}`;
-
-      versePointer++;
-      updateProgressBar();
-      document.getElementById("checkBtn").disabled = true;
-      document.getElementById("showBtn").disabled = false;
-    }
-
-    // Initialize progress bar at 0%
-    updateProgressBar();
-  </script>
+</script>
 </body>
 </html>
