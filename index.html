@@ -1,263 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Scripture Checker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verse App</title>
+<style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding-left: 20px;
-      padding-right: 20px;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #cce2ff, #f2f6ff, #b8c9fc);
+        margin: 0;
+        padding: 0;
     }
-
-    .wrapper {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      padding: 20px;
-      width: 100%;
-      max-width: 1200px;
-    }
-
     .container {
-      text-align: center;
-      background-color: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 900px;
-      width: 100%;
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
     }
-
-    .debug-box {
-      background-color: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      width: 100%;
-      font-size: 28px;
-      text-align: left;
+    .verse-box {
+        background-color: #f8f1ff; /* Your earlier verse box color */
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        font-size: 1.2rem;
     }
-
-    /* Progress bar container */
     .progress-container {
-      width: 100%;
-      height: 10px;
-      background-color: #e0e0e0;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      overflow: hidden;
+        width: 100%;
+        background-color: #e4e8ff;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        height: 16px;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
     }
-
-    /* Progress bar fill */
     .progress-bar {
-      height: 100%;
-      width: 0%;
-      background-color: #4caf50;
-      transition: width 0.4s ease;
+        height: 100%;
+        background-color: #a7b7ff;
+        width: 0%;
+        transition: width 0.4s ease;
     }
-
-    #scriptureContents {
-      padding: 20px;
-      margin: 20px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      background-color: #fff8e7;
-      font-size: 28px;
-      min-height: 60px;
-      border: 2px solid #e0c68a;
+    .button-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
     }
-
-    #correctnessReport {
-      font-size: 20px;
-      color: #333;
-      min-height: 2px;
-      max-width: 900px;
-      width: 100%;
-      margin: 20px;
-      text-align: center;
-    }
-
-    input {
-      font-size: 28px;
-      padding: 8px;
-      width: 80%;
-      margin: 25px;
-    }
-
     button {
-      font-size: 28px;
-      padding: 10px 20px;
-      margin: 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      color: white;
+        padding: 10px 18px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.1s ease;
     }
-
-    button:first-of-type {
-      background-color: #4a90e2;
+    button:active {
+        transform: scale(0.97);
     }
-
-    button:last-of-type {
-      background-color: #4caf50;
+    .btn-primary {
+        background-color: #b4d4ff; /* Soft pastel blue */
+        color: #003366;
     }
-
-    button:disabled {
-      background-color: #ccc !important;
-      color: #666;
-      cursor: not-allowed;
-      opacity: 0.7;
+    .btn-primary:hover {
+        background-color: #a3c8ff;
     }
-
-    @media (max-width: 900px) {
-      .wrapper {
-        flex-direction: column-reverse;
-        align-items: center;
-      }
-      .container {
-        max-width: 500px;
-      }
-      .debug-box {
-        font-size: 20px;
-      }
-      button {
-        font-size: 20px;
-      }
-      #scriptureContents {
-        font-size: 15px;
-        padding: 10px;
-        min-height: 30px;
-      }
+    .btn-secondary {
+        background-color: #ffd5ec; /* Soft pastel pink */
+        color: #660033;
     }
-  </style>
+    .btn-secondary:hover {
+        background-color: #ffc1e4;
+    }
+    .btn-tertiary {
+        background-color: #c6ffd5; /* Soft pastel green */
+        color: #004d1a;
+    }
+    .btn-tertiary:hover {
+        background-color: #afffc2;
+    }
+</style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="container">
-      <!-- Progress bar -->
-      <div class="progress-container">
+
+<div class="container">
+    <div class="verse-box" id="verseBox">
+        This is a sample verse text.
+    </div>
+
+    <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
-      </div>
-
-      <input type="text" id="userInput" placeholder="Type a reference..." autocomplete="off" spellcheck="false">
-      <p id="correctnessReport"></p>
-      <p id="scriptureContents">Click "Show Verse" to begin. You have 5 daily verses. Guess the reference for each verse shown.</p>
-
-      <button id="showBtn" onclick="showNextVerse()">Show Verse</button>
-      <button id="checkBtn" onclick="checkReference()">Check Reference</button>
     </div>
 
-    <div class="debug-box">
-      <p id="scoreDisplay">
-        Current Average: 0<br>
-        Total Score: 0<br>
-        Attempts: 0
-      </p>
+    <div class="button-group">
+        <button class="btn-primary" onclick="updateProgress(25)">Mark 25%</button>
+        <button class="btn-secondary" onclick="updateProgress(50)">Mark 50%</button>
+        <button class="btn-tertiary" onclick="updateProgress(75)">Mark 75%</button>
+        <button class="btn-primary" onclick="updateProgress(100)">Mark 100%</button>
     </div>
-  </div>
+</div>
 
-  <!-- Load scriptures and references -->
-  <script src="source.js"></script>
+<script>
+function updateProgress(percent) {
+    const bar = document.getElementById('progressBar');
+    bar.style.width = percent + '%';
+}
+</script>
 
-  <script>
-    let currentIndex = null;
-    let scores = [];
-    let totalScore = 0;
-    let versePointer = 0;
-    let dailyIndexes = [];
-
-    function getDailySeed() {
-      const today = new Date();
-      return today.getFullYear() * 1000 + today.getMonth() * 50 + today.getDate();
-    }
-
-    function seededRandom(seed) {
-      let x = Math.sin(seed) * 10000;
-      return x - Math.floor(x);
-    }
-
-    function getDailyVerses() {
-      let seed = getDailySeed();
-      let indexes = [];
-      for (let i = 0; i < 5; i++) {
-        seed += i;
-        let index = Math.floor(seededRandom(seed) * scriptures.length);
-        indexes.push(index);
-      }
-      return indexes;
-    }
-
-    dailyIndexes = getDailyVerses();
-
-    function showNextVerse() {
-      if (versePointer >= dailyIndexes.length) {
-        document.getElementById("scriptureContents").innerText = "That's all for today! Come back tomorrow for new verses.";
-        document.getElementById("showBtn").disabled = true;
-        return;
-      }
-
-      currentIndex = dailyIndexes[versePointer];
-      const verse = scriptures[currentIndex];
-      document.getElementById("scriptureContents").innerText = verse;
-      document.getElementById("correctnessReport").innerText = "";
-      document.getElementById("userInput").value = "";
-      document.getElementById("checkBtn").disabled = false;
-      document.getElementById("showBtn").disabled = true;
-    }
-
-    function updateProgressBar() {
-      const progress = ((versePointer) / dailyIndexes.length) * 100;
-      document.getElementById("progressBar").style.width = progress + "%";
-    }
-
-    function checkReference() {
-      const input = document.getElementById("userInput").value.trim().toLowerCase();
-      const messageBox = document.getElementById("correctnessReport");
-      const allRefsLower = references.map(ref => ref.toLowerCase());
-      const correctReference = references[currentIndex].toLowerCase();
-      let score = 0;
-
-      if (input === correctReference) {
-        score = 1000;
-        messageBox.innerHTML = `You're right! That was ${references[currentIndex]}. Score: 1000/1000`;
-      } else if (allRefsLower.includes(input)) {
-        const userIndex = allRefsLower.indexOf(input);
-        const distance = Math.abs(currentIndex - userIndex);
-        const decayBase = Math.pow(1 / 1000, 1 / 3000);
-        score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
-        messageBox.innerHTML = `You entered: "${references[userIndex]}"<br>
-        Correct answer: "${references[currentIndex]}"<br>
-        Score: ${score}/1000`;
-      } else {
-        messageBox.innerHTML = `"${input}" doesn't match any scripture reference. Check your spelling and try again.`;
-        return;
-      }
-
-      scores.push(score);
-      totalScore += score;
-      const average = totalScore / scores.length;
-      document.getElementById("scoreDisplay").innerHTML =
-        `Current Average: ${average.toFixed(0)}<br>` +
-        `Total Score: ${totalScore}<br>` +
-        `Attempts: ${scores.length}`;
-
-      versePointer++;
-      updateProgressBar();
-      document.getElementById("checkBtn").disabled = true;
-      document.getElementById("showBtn").disabled = false;
-    }
-
-    // Initialize progress bar at 0%
-    updateProgressBar();
-  </script>
 </body>
 </html>
