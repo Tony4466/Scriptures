@@ -623,9 +623,8 @@
   }
 
   function showCustomVerse() {
-    customCurrentIndex = Math.floor(Math.random() * general_conference.length);
-    let index = fruits.indexOf("Apple");
-    customVerseBox.textContent = general_conference[customCurrentIndex];
+    customCurrentIndex = scriptures.indexOf(general_conference[Math.floor(Math.random() * general_conference.length)]);
+    customVerseBox.textContent = scriptures[customCurrentIndex];
     customInput.value = '';
     customReport.textContent = '';
     customCheckBtn.disabled = false;
