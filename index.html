@@ -623,7 +623,10 @@
   }
 
   function showCustomVerse() {
-    customCurrentIndex = references.indexOf(general_conference[Math.floor(Math.random()**4 * general_conference.length)]);
+    function bias(x){
+      return Math.max(.05*x,.3*(x-.1),x-.35,3*(x-2/3))
+    }
+    customCurrentIndex = references.indexOf(general_conference[Math.floor(bias(Math.random()) * general_conference.length)]);
     customVerseBox.textContent = scriptures[customCurrentIndex];
     customInput.value = '';
     customReport.textContent = '';
