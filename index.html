@@ -624,9 +624,8 @@
 
   function showCustomVerse() {
     function bias(x){
-      return 0
+      return Math.max(.05*x,.3*(x-.1),x-.35,3*(x-2/3))
     }
-    import Math
     customCurrentIndex = references.indexOf(general_conference[Math.floor(bias(Math.random()) * general_conference.length)]);
     customVerseBox.textContent = scriptures[customCurrentIndex];
     customInput.value = '';
