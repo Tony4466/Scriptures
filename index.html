@@ -306,8 +306,8 @@
       <p>Choose your game mode:</p>
       <div id="menuButtons">
         <button id="dailyBtn" class="menu-button btn-blue" onclick="startDailyGame()">Daily Game</button>
-        <button id="randomBtn" class="menu-button btn-green" onclick="startRandomGame()">Random Verses Game</button>
-        <button id="customBtn" class="menu-button btn-orange" onclick="startCustomGame()">Custom Game</button>
+        <button id="randomBtn" class="menu-button btn-green" onclick="startRandomGame()">Random Game</button>
+        <button id="customBtn" class="menu-button btn-orange" onclick="startCustomGame()">General Conference</button>
       </div>
     </div>
 
@@ -518,15 +518,18 @@
 
     if (input === references[currentIdx].toLowerCase()) {
       score = 1000;
-      dailyReport.innerHTML = `✅ You're right! That was ${references[currentIdx]}. Score: 1000/1000`;
+      dailyReport.innerHTML = `You're right! That was ${references[currentIdx]}. Score: 1000/1000`;
       dailyReport.style.color = 'green';
     } else if (allRefsLower.includes(input)) {
       const userIdx = allRefsLower.indexOf(input);
       const distance = Math.abs(currentIdx - userIdx);
       const decayBase = Math.pow(1 / 1000, 1 / 3000);
       score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
-      dailyReport.innerHTML = `❌ You entered: "${references[userIdx]}"<br>Correct answer: "${references[currentIdx]}"<br>Score: ${score}/1000`;
-      dailyReport.style.color = 'red';
+      dailyReport.innerHTML = `You entered: "${references[userIdx]}"<br>Correct answer: "${references[currentIdx]}"<br>Score: ${score}/1000`;
+      if (score < 400) {
+        dailyReport.style.color = 'red';
+      } else {
+        dailyReport.style.color = 'green';
     } else {
       dailyReport.innerHTML = `"${input}" doesn't match any scripture reference. Check your spelling and try again.`;
       dailyReport.style.color = 'black';
@@ -582,15 +585,18 @@
 
     if (input === correctRef) {
       score = 1000;
-      randomReport.innerHTML = `✅ You're right! That was ${references[randomCurrentIndex]}. Score: 1000/1000`;
+      randomReport.innerHTML = `You're right! That was ${references[randomCurrentIndex]}. Score: 1000/1000`;
       randomReport.style.color = 'green';
     } else if (allRefsLower.includes(input)) {
       const userIdx = allRefsLower.indexOf(input);
       const distance = Math.abs(randomCurrentIndex - userIdx);
       const decayBase = Math.pow(1 / 1000, 1 / 3000);
       score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
-      randomReport.innerHTML = `❌ You entered: "${references[userIdx]}"<br>Correct answer: "${references[randomCurrentIndex]}"<br>Score: ${score}/1000`;
-      randomReport.style.color = 'red';
+      randomReport.innerHTML = `You entered: "${references[userIdx]}"<br>Correct answer: "${references[randomCurrentIndex]}"<br>Score: ${score}/1000`;
+      if (score < 400) {
+        dailyReport.style.color = 'red';
+      } else {
+        dailyReport.style.color = 'green';
     } else {
       randomReport.innerHTML = `"${input}" doesn't match any scripture reference. Check your spelling and try again.`;
       randomReport.style.color = 'black';
@@ -642,15 +648,18 @@
 
     if (input === correctRef) {
       score = 1000;
-      customReport.innerHTML = `✅ You're right! That was ${references[customCurrentIndex]}. Score: 1000/1000`;
+      customReport.innerHTML = `You're right! That was ${references[customCurrentIndex]}. Score: 1000/1000`;
       customReport.style.color = 'green';
     } else if (allRefsLower.includes(input)) {
       const userIdx = allRefsLower.indexOf(input);
       const distance = Math.abs(customCurrentIndex - userIdx);
       const decayBase = Math.pow(1 / 1000, 1 / 3000);
       score = distance >= 3000 ? 0 : Math.round(1000 * Math.pow(decayBase, distance));
-      customReport.innerHTML = `❌ You entered: "${references[userIdx]}"<br>Correct answer: "${references[customCurrentIndex]}"<br>Score: ${score}/1000`;
-      customReport.style.color = 'red';
+      customReport.innerHTML = `You entered: "${references[userIdx]}"<br>Correct answer: "${references[customCurrentIndex]}"<br>Score: ${score}/1000`;
+      if (score < 400) {
+        dailyReport.style.color = 'red';
+      } else {
+        dailyReport.style.color = 'green';
     } else {
       customReport.innerHTML = `"${input}" doesn't match any scripture reference. Check your spelling and try again.`;
       customReport.style.color = 'black';
